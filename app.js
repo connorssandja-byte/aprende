@@ -34,7 +34,9 @@ function hydrateFromBackup() {
 // ═══════════════════════════════════════════════
 // LANGUE
 // ═══════════════════════════════════════════════
-let currentLang = 'es';
+// Langues actives de cette installation (config.js : langs). Par défaut les trois.
+const APP_LANGS = (typeof APRENDE_CONFIG !== 'undefined' && Array.isArray(APRENDE_CONFIG.langs) && APRENDE_CONFIG.langs.length) ? APRENDE_CONFIG.langs : APP_LANGS;
+let currentLang = APP_LANGS.includes('es') ? 'es' : APP_LANGS[0];
 
 function selectLang(lang) {
   currentLang = lang;
@@ -71,7 +73,7 @@ function updateSidebarBadges() {
     if(counts[c.lang] === undefined || c.reps === 0) return;
     if(c.due <= endMs) counts[c.lang]++;
   });
-  ['es','ln','en'].forEach(l => {
+  APP_LANGS.forEach(l => {
     const badge = document.getElementById('ds-badge-' + l);
     if(!badge) return;
     if(counts[l] > 0) { badge.textContent = counts[l]; badge.classList.add('visible'); }
@@ -456,208 +458,7 @@ function showLNResults(score, maxScore, mistakes) {
 // ═══════════════════════════════════════════════
 // ANGLAIS DATA & JEUX
 // ═══════════════════════════════════════════════
-const ENGLISH = [
-  {en:"carry [sth] out",fr:"Emporter / Exécuter [qqch]"},
-  {en:"Realm",fr:"Royaume / Domaine"},
-  {en:"Feeble",fr:"Faible, frêle"},
-  {en:"on a par with [sth]",fr:"Au même niveau que [qch]"},
-  {en:"Wrinkle",fr:"Ride"},
-  {en:"Rusty",fr:"Rouillé"},
-  {en:"Refrain",fr:"S'abstenir"},
-  {en:"Earnestly",fr:"Sérieusement"},
-  {en:"Limb",fr:"Membre du corps (bras, jambe)"},
-  {en:"Upon",fr:"Sur / En +"},
-  {en:"To slack off",fr:"Se relâcher"},
-  {en:"To act [sth] out",fr:"Jouer (un rôle)"},
-  {en:"Ankle",fr:"Cheville"},
-  {en:"Quench",fr:"Désaltérer / Étancher"},
-  {en:"Chopstick",fr:"Baguette (cuisine)"},
-  {en:"Fierce",fr:"Féroce"},
-  {en:"To dabble in",fr:"S'essayer à"},
-  {en:"Crooked",fr:"Tordu"},
-  {en:"grant [sb] [sth]",fr:"Accorder quelque chose à quelqu'un"},
-  {en:"Thrilled",fr:"Ravi, surexcité"},
-  {en:"Cluttered",fr:"En désordre"},
-  {en:"Oblivious",fr:"Inconscient / Qui ignore"},
-  {en:"Thirst",fr:"Soif"},
-  {en:"Reignite",fr:"Rallumer / Raviver"},
-  {en:"To stage [sth]",fr:"Mettre en scène"},
-  {en:"Pinch",fr:"Pincer"},
-  {en:"Dwell",fr:"Demeurer / S'attarder sur"},
-  {en:"Flaw",fr:"Défaut"},
-  {en:"Lighter",fr:"Plus léger / Briquet"},
-  {en:"Conceited",fr:"Orgueilleux"},
-  {en:"Rattle",fr:"Secouer / Faire du bruit"},
-  {en:"To eavesdrop",fr:"Espionner / Écouter discrètement"},
-  {en:"Head-on",fr:"De front / De plein fouet"},
-  {en:"To take the stage",fr:"Prendre la scène / Attirer l'attention"},
-  {en:"Intercourse",fr:"Rapports (sexuels)"},
-  {en:"hold out on [sb]",fr:"Cacher quelque chose à quelqu'un"},
-  {en:"To frown",fr:"Froncer les sourcils"},
-  {en:"Settle",fr:"Régler / S'installer"},
-  {en:"fathom [sth]",fr:"Percer un mystère / Comprendre"},
-  {en:"Steward",fr:"Coordinateur / Gérant"},
-  {en:"To soothe [sb/sth]",fr:"Apaiser / Calmer"},
-  {en:"To spark [sth]",fr:"fig. Déclencher / Provoquer"},
-  {en:"shift [sth]",fr:"litt. Déplacer / fig. Changer de perspective"},
-  // ── Session 11 mai 2026 ──
-  {en:"to mingle",fr:"litt. Se mélanger / fig. Socialiser / Mingler"},
-  {en:"to ship [sb]",fr:"fig. Shipper qqn / Vouloir qu'ils soient ensemble (fandom)"},
-  {en:"though",fr:"Pourtant / Quand même / Cependant (fin de phrase ou conjonction)"},
-  {en:"doable",fr:"Faisable / Réalisable"},
-  {en:"to depict",fr:"Dépeindre / Représenter / Illustrer"},
-  {en:"to cut sb some slack",fr:"fig. Être indulgent envers qqn / Lâcher la pression"},
-  {en:"to back sb up",fr:"litt. Reculer / fig. Soutenir qqn / Couvrir qqn"},
-  {en:"add-on",fr:"litt. Ajout / fig. Module / Extension / Supplément"},
-  {en:"to be on edge",fr:"litt. Être au bord / fig. Être à cran / Sur les nerfs"},
-  {en:"to meddle",fr:"fig. S'ingérer / Se mêler des affaires des autres / Fouiner"},
-  {en:"to belittle",fr:"fig. Rabaisser / Dévaloriser / Diminuer"},
-  {en:"playwright",fr:"Dramaturge / Auteur de pièces de théâtre"},
-  {en:"to bump heads",fr:"litt. Se cogner la tête / fig. Être en désaccord / S'affronter"},
-  {en:"to rack one's brain",fr:"fig. Se creuser la tête / Se triturer les méninges"},
-  {en:"to mess up",fr:"litt. Mettre le désordre / fig. Rater / Gâcher / Foutre en l'air"},
-  // ── Session 15 mai 2026 ──
-  {en:"full-fledged",fr:"À part entière / Complet / Pleinement développé"},
-  {en:"to alienate",fr:"litt. Aliéner / fig. Mettre à l'écart / Isoler / Éloigner"},
-  {en:"to give sb a nudge",fr:"litt. Donner un petit coup de coude / fig. Pousser doucement / Inciter subtilement"},
-  {en:"a nudge",fr:"litt. Petit coup de coude / fig. Coup de pouce / Légère incitation"},
-  {en:"rail yard",fr:"Dépôt ferroviaire / Gare de triage"},
-  {en:"hobo",fr:"Vagabond itinérant / Clochard voyageur (qui saute dans les trains)"},
-  {en:"to relieve sb of their duties",fr:"fig. Relever qqn de ses fonctions / Décharger de ses responsabilités"},
-  {en:"to swing out",fr:"litt. Balancer vers l'extérieur / fig. Se lancer / Sortir en trombe"},
-  {en:"to get strung up",fr:"litt. Se faire suspendre / fig. Se faire pendre / Être à cran"},
-  {en:"thrill",fr:"litt. Frisson / fig. Sensation forte / Montée d'adrénaline"},
-  {en:"thrilling",fr:"Palpitant / Électrisant / Haletant"},
-  // ── Session 19 mai 2026 ──
-  {en:"to bestow (sth on sb)",fr:"litt. Octroyer / Accorder / Conférer / Offrir (solennel)"},
-  {en:"to grant",fr:"Accorder / Octroyer / Admettre (une demande)"},
-  {en:"a grant",fr:"Subvention / Bourse / Don"},
-  {en:"take for granted",fr:"Tenir pour acquis / Ne pas apprécier à sa juste valeur"},
-  // ── Sessions récentes (mai-juin 2026) ──
-  {en:"to ground (a flight)",fr:"Clouer au sol / Immobiliser (avion)"},
-  {en:"grounded",fr:"Cloué au sol / Puni (enfant) / Terre-à-terre"},
-  {en:"flight",fr:"Vol"},
-  {en:"stay grounded",fr:"Rester ancré / Rester humble"},
-  {en:"to be off the hook",fr:"fig. Être tiré d'affaire / S'en tirer"},
-  {en:"to let sb off the hook",fr:"Laisser qqn s'en tirer / Épargner qqn"},
-  {en:"hook",fr:"Crochet / Hameçon"},
-  {en:"hook up",fr:"Brancher / Connecter / (argot) Coucher avec"},
-  {en:"hold (verb)",fr:"Tenir / Garder / Contenir"},
-  {en:"hold (noun)",fr:"Prise / Emprise / Contrôle"},
-  {en:"to get hold of sb",fr:"Joindre qqn / Réussir à contacter"},
-  {en:"to have a hold on sb",fr:"Avoir de l'emprise sur qqn"},
-  {en:"to get a hold of yourself",fr:"Se ressaisir / Se reprendre"},
-  {en:"hold on",fr:"Attendre / Tenir bon / Ne pas quitter (tel.)"},
-  {en:"hold up",fr:"Tenir / Retarder / Braquer (vol)"},
-  {en:"hold back",fr:"Retenir / Se retenir"},
-  {en:"hold out",fr:"Tenir / Résister / Tendre (main)"},
-  {en:"bereaved",fr:"Endeuillé / En deuil (adj.)"},
-  {en:"the bereaved",fr:"Les endeuillés / La famille du défunt"},
-  {en:"bereavement",fr:"Deuil / Perte d'un proche"},
-  {en:"grief",fr:"Chagrin / Douleur du deuil"},
-  {en:"mourning",fr:"Deuil (processus / période)"},
-  {en:"meticulous",fr:"Méticuleux / Minutieux / Pointilleux"},
-  {en:"meticulously",fr:"Méticuleusement / Minutieusement"},
-  {en:"to corner",fr:"litt. Coincer / fig. Acculer / Piéger / Mettre au pied du mur"},
-  {en:"cornered",fr:"Coincé / Acculé"},
-  {en:"corner",fr:"Coin / Angle / Corner (foot)"},
-  {en:"to impeach",fr:"Destituer / Mettre en accusation (haut fonctionnaire)"},
-  {en:"impeachment",fr:"Procédure de destitution / Mise en accusation"},
-  {en:"a fine",fr:"Amende / Contravention"},
-  {en:"to fine",fr:"Infliger une amende / Pénaliser"},
-  {en:"fine print",fr:"Petits caractères (contrat)"},
-  {en:"walk a fine line",fr:"Marcher sur une ligne fine / Situation délicate"},
-  {en:"scorched",fr:"Brûlé / Carbonisé / Roussi"},
-  {en:"to scorch",fr:"Brûler légèrement / Roussir / Carboniser"},
-  {en:"scorched rice",fr:"Riz brûlé (croûte au fond de la marmite)"},
-  {en:"scorched earth",fr:"Terre brûlée (stratégie)"},
-  {en:"scorching hot",fr:"Torride / Brûlant"},
-  // ── Session 5 octobre 2026 — mots + équivalents C1 ──
-  {"en": "cork", "fr": "Bouchon de liège / Boucher · (fig.) cork up your feelings = tout garder pour soi", "lvl": "B2", "c1": "bottle sth up · put a lid on it", "say": "Don't bottle it up, just tell me."},
-  {"en": "to snoop", "fr": "Fouiner / Espionner (péj.)", "lvl": "C1", "c1": "pry into · nosy · poke your nose into", "say": "Stop poking your nose into my business."},
-  {"en": "to squat", "fr": "S'accroupir / Squatter · (argot) not know squat = n'y rien connaître", "lvl": "B2", "c1": "crouch down · not know the first thing about", "say": "He doesn't know the first thing about football."},
-  {"en": "to cauterise", "fr": "Cautériser · (fig.) endurcir, rendre insensible", "lvl": "C2", "c1": "become desensitised to", "say": "You become desensitised to it after a while."},
-  {"en": "pull toward", "fr": "Attirer vers / Être attiré par", "lvl": "B2", "c1": "be drawn to · gravitate toward", "say": "I tend to gravitate toward data-heavy projects."},
-  {"en": "to bottle sth up", "fr": "Refouler, garder pour soi (émotions)", "lvl": "C1", "say": "Don't bottle it up, just tell me."},
-  {"en": "put a lid on it", "fr": "(fam.) Ferme-la · Contenir, limiter", "lvl": "C1", "say": "Can you put a lid on it for five minutes?"},
-  {"en": "to pry into", "fr": "S'immiscer dans / Fouiner dans", "lvl": "C1", "say": "I don't want to pry, but are you okay?"},
-  {"en": "nosy", "fr": "Curieux, fouineur (péj.)", "lvl": "B2", "say": "Don't be so nosy!"},
-  {"en": "poke your nose into", "fr": "Fourrer son nez dans", "lvl": "C1", "say": "Stop poking your nose into my business."},
-  {"en": "to crouch down", "fr": "S'accroupir (neutre)", "lvl": "B2", "say": "She crouched down to tie her shoes."},
-  {"en": "not know the first thing about", "fr": "N'y connaître absolument rien", "lvl": "C1", "say": "He doesn't know the first thing about football."},
-  {"en": "become desensitised to", "fr": "Devenir insensible à / S'habituer à", "lvl": "C1", "say": "You become desensitised to it after a while."},
-  {"en": "be drawn to", "fr": "Être attiré par (instinctivement)", "lvl": "C1", "say": "I've always been drawn to big cities."},
-  {"en": "gravitate toward", "fr": "Se tourner naturellement vers", "lvl": "C1", "say": "I tend to gravitate toward data-heavy projects."},
-  // ── Session 8 octobre 2026 ──
-  {"en": "to rip out", "fr": "Arracher (d'un coup, avec force)", "lvl": "B2", "c1": "tear out · yank out · gut", "c2": "wrest (sth from sb)", "say": "They ripped out the old carpet last weekend."},
-  {"en": "to tear out", "fr": "Arracher (une page…)", "lvl": "B2", "say": "Can you tear out a page for me?"},
-  {"en": "to yank out", "fr": "Arracher d'un coup sec (fam.)", "lvl": "C1", "say": "He yanked out the plug without saving."},
-  {"en": "to gut", "fr": "Vider entièrement · (fig.) vider de sa substance", "lvl": "C1", "say": "The budget cuts gutted the project."},
-  {"en": "to wrest", "fr": "Arracher de force (pouvoir, contrôle) — soutenu", "lvl": "C2", "say": "The investors wrested control from the founder."},
-  {"en": "a rip-off", "fr": "Une arnaque (fam.)", "lvl": "B2", "say": "Twenty bucks for a coffee? That's a rip-off!"},
-  {"en": "belly button", "fr": "Nombril (courant)", "lvl": "B1", "c1": "navel · navel-gazing", "c2": "umbilicus", "say": "She got her belly button pierced last summer."},
-  {"en": "navel", "fr": "Nombril (neutre, écrit)", "lvl": "C1", "say": "She has a small tattoo just above her navel."},
-  {"en": "navel-gazing", "fr": "(fig.) Nombrilisme", "lvl": "C1", "say": "Less navel-gazing, more action."},
-  {"en": "umbilicus", "fr": "Ombilic (médical)", "lvl": "C2", "say": "The incision was made just below the umbilicus."},
-  {"en": "innie / outie", "fr": "Nombril creux / qui ressort (fam.)", "lvl": "C1", "say": "Are you an innie or an outie?"},
-  {"en": "to pull strings", "fr": "Faire jouer ses relations / Pistonner", "lvl": "C1", "c1": "call in a favor", "c2": "have friends in high places", "say": "His uncle pulled some strings to get him the job."},
-  {"en": "to call in a favor", "fr": "Demander un service rendu en retour", "lvl": "C1", "say": "I helped him move, so I'm calling in a favor."},
-  {"en": "friends in high places", "fr": "Avoir le bras long (des relations haut placées)", "lvl": "C2", "say": "He never gets fined, he has friends in high places."},
-  {"en": "parole board", "fr": "Commission des libérations conditionnelles", "lvl": "C1", "c1": "on parole", "c2": "probation", "say": "The parole board denied his request."},
-  {"en": "on parole", "fr": "En liberté conditionnelle", "lvl": "C1", "say": "He was released on parole after five years."},
-  {"en": "probation", "fr": "Sursis avec mise à l'épreuve (≠ parole)", "lvl": "C2", "say": "She got two years' probation instead of jail."},
-  {"en": "inquiry", "fr": "Enquête officielle / Demande de renseignements", "lvl": "C1", "c1": "a probe", "c2": "an inquest", "say": "The government launched a public inquiry into the scandal."},
-  {"en": "a probe", "fr": "Une enquête (langage des médias)", "lvl": "C1", "say": "Police opened a probe into the fire."},
-  {"en": "an inquest", "fr": "Enquête judiciaire sur un décès", "lvl": "C2", "say": "The inquest ruled his death accidental."},
-,
-  {en:"to behead",fr:"Décapiter"},
-  {en:"to be cleared",fr:"Être disculpé / Être innocenté"},
-  {en:"to overlook",fr:"Négliger / Passer à côté de / Donner sur"},
-  {en:"to despise",fr:"Mépriser / Avoir du mépris pour"},
-  {en:"to burn bridges",fr:"Couper les ponts (fig.)"},
-  {en:"to weigh down",fr:"Peser sur / Accabler / Plomber"},
-  {en:"to predate",fr:"Précéder / Être antérieur à"},
-  {en:"breeding ground",fr:"Terreau / Foyer (fig.)"},
-  {en:"to get off",fr:"Descendre (d'un transport)"},
-  {en:"to catch up (score)",fr:"Rattraper au score"},
-  {en:"scoreboard",fr:"Tableau d'affichage"},
-  {en:"as long as we win",fr:"Tant qu'on gagne"},
-  {en:"who do they think they are",fr:"Pour qui ils se prennent"},
-  {en:"the audacity",fr:"Le culot / L'audace"},
-  {en:"the nerve",fr:"Le culot / Le toupet"},
-  {en:"to get too big for one's boots",fr:"Avoir les chevilles qui enflent"},
-  {en:"alimony",fr:"Pension alimentaire (ex-conjoint)"},
-  {en:"child support",fr:"Pension alimentaire (enfants)"},
-  {en:"to default on",fr:"Manquer à (ses obligations de paiement)"},
-  {en:"to be all over someone",fr:"Être sur qqn / Marquer de près (sport)"},
-  {en:"to close someone down",fr:"Couper les options (foot)"},
-  {en:"to swarm",fr:"Essaimer / Se ruer sur"},
-  {en:"to brush off",fr:"Ignorer / Balayer (fig.)"},
-  {en:"to shrug off",fr:"Hausser les épaules / S'en foutre"},
-  {en:"to not give sth the time of day",fr:"Ne même pas accorder d'attention"},
-  {en:"to rough it",fr:"Vivre à la dure / Faire sans confort"},
-  {en:"to slum it",fr:"Vivre en-dessous de son standing"},
-  {en:"to make do",fr:"Faire avec ce qu'on a"},
-  {en:"mattress",fr:"Matelas"},
-  {en:"memory foam",fr:"Mousse à mémoire de forme"},
-  {en:"mattress topper",fr:"Surmatelas"},
-  {en:"chartered",fr:"Affrété / Agréé (professionnel)"},
-  {en:"chartered accountant",fr:"Expert-comptable"},
-  {en:"to charter",fr:"Affréter"},
-  {en:"cargo plane",fr:"Avion-cargo"},
-  {en:"freight",fr:"Fret / Marchandises"},
-  {en:"payload",fr:"Charge utile"},
-  {en:"belly",fr:"Ventre / Bide (fam.)"},
-  {en:"beer belly",fr:"Bide à bière"},
-  {en:"to go belly up",fr:"Faire faillite / Capoter"},
-  {en:"belly flop",fr:"Plat (saut dans l'eau)"},
-  {en:"belly of the beast",fr:"Dans la gueule du loup"},
-  {en:"belly cargo",fr:"Fret en soute ventrale"},
-  {en:"belly hold",fr:"Soute ventrale"},
-  {en:"tariff",fr:"Droit de douane"},
-  {en:"to fill to capacity",fr:"Remplir à pleine capacité"},
-  {en:"to max out",fr:"Atteindre le maximum / Remplir au max"}
-];
+const ENGLISH = [];
 if(!ENGLISH.length && typeof COURSE_EN !== 'undefined') ENGLISH.push(...deckFromCourse(COURSE_EN, w => ({ en: w[0], fr: w[1], say: w[2] || '' })));
 
 let enGameState = {};
@@ -848,7 +649,7 @@ function updateNativeBests() {
 // Preload voices (iOS loads them lazily)
 if('speechSynthesis' in window) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); }
 
-const PRON_DATA = {"to rip out": ["They ripped out the old carpet last weekend.", "they RIP-TOWT thee OHLD KAR-pit last WEEK-end", "ˌrɪp ˈaʊt", "ripped out se lie : « RIP-TOWT »"], "to tear out": ["Can you tear out a page for me?", "kin yuh TEH-ROWT uh PAYJ fer mee", "ˌtɛr ˈaʊt", "tear (déchirer) se dit « tèr », pas « tir » (= larme)"], "to yank out": ["He yanked out the plug without saving.", "hee YANK-TOWT thuh PLUG with-OWT SAY-ving", "ˌjæŋk ˈaʊt", "yank : « æ » très ouvert"], "to gut": ["The budget cuts gutted the project.", "thuh BUH-jit KUTS GUH-did thuh PRAH-jekt", "ɡʌt", "gutted → « GUH-did » (flap T)"], "to wrest": ["The investors wrested control from the founder.", "thee in-VES-terz RES-tid kun-TROHL frum thuh FOWN-der", "rɛst", "Le w est muet : « rest »"], "a rip-off": ["Twenty bucks for a coffee? That's a rip-off!", "TWEN-ee BUKS fer uh KAW-fee thats uh RI-pawf", "ˈrɪpˌɔf", "twenty → « TWEN-ee » : le t disparaît après n"], "belly button": ["She got her belly button pierced last summer.", "shee GAHT-er BE-lee BUH-dn PEERST last SUM-er", "ˈbɛli ˌbʌtən", "button → « BUH-dn » : T glottal, avalé"], "navel": ["She has a small tattoo just above her navel.", "shee haz uh SMAWL ta-TOO just uh-BUV-er NAY-vul", "ˈneɪvəl", "above her → « uh-BUV-er » (h effacé)"], "navel-gazing": ["Less navel-gazing, more action.", "LES NAY-vul gay-zing MOR AK-shun", "ˈneɪvəlˌɡeɪzɪŋ", "accent principal sur NAY"], "umbilicus": ["The incision was made just below the umbilicus.", "thee in-SI-zhun wuz MAYD just buh-LOH thee um-BI-li-kus", "ʌmˈbɪlɪkəs", "accent sur BI"], "innie / outie": ["Are you an innie or an outie?", "er yoo-uh-NI-nee or uh-NOW-dee", "ˈɪni / ˈaʊti", "outie → « OW-dee » (flap T)"], "to pull strings": ["His uncle pulled some strings to get him the job.", "hiz UNG-kul PULD sum STRINGZ tuh GE-dim thuh JAHB", "ˌpʊl ˈstrɪŋz", "get him → « GE-dim » (h effacé + flap T)"], "to call in a favor": ["I helped him move, so I'm calling in a favor.", "ai HELP-tim MOOV soh aim KAW-ling i-nuh FAY-ver", "ˌkɔl ɪn ə ˈfeɪvər", "in a → « i-nuh »"], "friends in high places": ["He never gets fined, he has friends in high places.", "hee NE-ver gets FAIND hee haz FREN-zin HAI PLAY-siz", "ˈfrɛndz ɪn ˌhaɪ ˈpleɪsɪz", "friends in → « FREN-zin », le d s'efface"], "parole board": ["The parole board denied his request.", "thuh puh-ROHL BORD di-NAID iz ri-KWEST", "pəˈroʊl ˌbɔrd", "⚠️ faux ami : parole = libération conditionnelle"], "on parole": ["He was released on parole after five years.", "hee wuz ri-LEEST ah-n puh-ROHL AF-ter FAIV YEERZ", "ɑn pəˈroʊl", "accent sur ROHL"], "probation": ["She got two years' probation instead of jail.", "shee GAHT too YEERZ proh-BAY-shun in-STE-duv JAYL", "proʊˈbeɪʃən", "instead of → « in-STE-duv »"], "inquiry": ["The government launched a public inquiry into the scandal.", "thuh GUV-er-ment LAWNCH-tuh PUB-lik IN-kwuh-ree IN-tuh thuh SKAN-dul", "ˈɪnkwəri", "US : surtout IN-kwuh-ree"], "a probe": ["Police opened a probe into the fire.", "puh-LEES OH-pun-duh PROHB IN-tuh thuh FAI-er", "proʊb", "police : accent sur LEES"], "an inquest": ["The inquest ruled his death accidental.", "thee IN-kwest ROOLD iz DETH ak-si-DEN-tul", "ˈɪnkwɛst", "death : TH sourd final"], "carry [sth] out": ["We carried out the analysis last week.", "wee KA-ree-DOWT thee uh-NA-luh-sis last WEEK", "ˌkæri ˈaʊt", "carried out se lie : « KA-ree-DOWT »"], "Realm": ["That's outside the realm of possibility.", "thats owt-SAID thuh RELM uv pah-suh-BI-luh-dee", "rɛlm", "Le « a » ne se prononce pas : « relm »"], "Feeble": ["That's a pretty feeble excuse.", "thats uh PRI-dee FEE-bul ik-SKYOOS", "ˈfibəl", "pretty → « PRI-dee » (flap T)"], "on a par with [sth]": ["Her English is on a par with a native speaker's.", "her ING-lish iz ah-nuh PAR with uh NAY-div SPEE-kerz", "ɑn ə ˈpɑr", "native → « NAY-div » (flap T)"], "Wrinkle": ["There's one little wrinkle in the plan.", "therz WUN LI-dul RING-kul in thuh PLAN", "ˈrɪŋkəl", "Le w de wrinkle est muet"], "Rusty": ["My Spanish is a little rusty.", "my SPA-nish iz uh LI-dul RUS-tee", "ˈrʌsti", "little → « LI-dul »"], "Refrain": ["Please refrain from using your phone.", "pleez ri-FRAYN frum YOO-zing yer FOHN", "rɪˈfreɪn", "your → « yer » (forme faible)"], "Earnestly": ["He earnestly believed it would work.", "hee ER-nist-lee buh-LEEVD it wud WERK", "ˈɝnɪstli", "Le R américain se prononce : « ER »"], "Limb": ["I'm not going out on a limb here.", "aim NAHT GOH-in ow-dah-nuh LIM heer", "lɪm", "Le b de limb est muet ; out on a → « ow-dah-nuh »"], "Upon": ["Once upon a time, there was a king.", "WUNS uh-PAH-nuh TAIM ther wuz uh KING", "əˈpɑn", "upon a → « uh-PAH-nuh »"], "To slack off": ["Stop slacking off and get to work.", "STAHP SLA-king AWF n get tuh WERK", "ˌslæk ˈɔf", "and → « n »"], "To act [sth] out": ["The kids acted out the whole scene.", "thuh KIDZ AK-ti-DOWT thuh hohl SEEN", "ˌækt ˈaʊt", "acted out → « AK-ti-DOWT »"], "Ankle": ["I twisted my ankle playing soccer.", "ai TWIS-tid my AN-kul PLAY-in SAH-ker", "ˈæŋkəl", "En US, soccer = foot ; football = foot américain"], "Quench": ["Nothing quenches your thirst like cold water.", "NUH-thing KWEN-chiz yer THERST laik kohld WAH-der", "kwɛntʃ", "water → « WAH-der » (flap T)"], "Chopstick": ["I still can't use chopsticks properly.", "ai STIL KANT YOOZ CHAHP-stiks PRAH-per-lee", "ˈtʃɑpˌstɪk", "can't en US : « kænt », pas « kahnt »"], "Fierce": ["It's a fierce competition out there.", "its uh FEERS kahm-puh-TI-shun OWT ther", "fɪrs", "Le r final se prononce"], "To dabble in": ["I dabbled in photography for a while.", "ai DA-buld in fuh-TAH-gruh-fee fer uh WAIL", "ˈdæbəl ɪn", "photography : accent sur TAH"], "Crooked": ["Your tie is a little crooked.", "yer TAI iz uh LI-dul KROO-kid", "ˈkrʊkɪd", "crooked (adj.) : 2 syllabes « KROO-kid »"], "grant [sb] [sth]": ["They granted him a second chance.", "they GRAN-ti-dim uh SE-kund CHANS", "ɡrænt", "« æ » ouvert en US : GRAN, pas GRAHN"], "Thrilled": ["I'm thrilled to be here.", "aim THRILD tuh bee HEER", "θrɪld", "TH : langue entre les dents, ni « s » ni « f »"], "Cluttered": ["My desk is so cluttered right now.", "my DESK iz soh KLUH-derd rait NOW", "ˈklʌtərd", "cluttered → « KLUH-derd » (flap T)"], "Oblivious": ["He was totally oblivious to the problem.", "hee wuz TOH-duh-lee uh-BLI-vee-us tuh thuh PRAH-blum", "əˈblɪviəs", "totally → « TOH-duh-lee »"], "Thirst": ["I woke up with a terrible thirst.", "ai WOH-kup with uh TE-ruh-bul THERST", "θɝst", "woke up → « WOH-kup »"], "Reignite": ["The trip reignited their friendship.", "thuh TRIP ree-ig-NAI-did ther FREND-ship", "ˌriɪɡˈnaɪt", "reignited → « ree-ig-NAI-did »"], "To stage [sth]": ["They staged a protest downtown.", "they STAYJ-duh PROH-test down-TOWN", "steɪdʒ", "staged a → « STAYJ-duh »"], "Pinch": ["Add a pinch of salt.", "A-duh PIN-chuv SAWLT", "pɪntʃ", "pinch of → « PIN-chuv »"], "Dwell": ["Don't dwell on the past.", "dohnt DWEL ahn thuh PAST", "dwɛl", "Don't : le t final presque avalé"], "Flaw": ["Every plan has a flaw.", "EV-ree PLAN ha-zuh FLAW", "flɔ", "every : 2 syllabes « EV-ree »"], "Lighter": ["Do you have a lighter?", "duh-yuh HA-vuh LAI-der", "ˈlaɪtər", "lighter → « LAI-der » (flap T)"], "Conceited": ["He's smart, but kind of conceited.", "heez SMART but KAIN-duh kun-SEE-did", "kənˈsitɪd", "kind of → « KAIN-duh »"], "Rattle": ["Something's rattling in the engine.", "SUM-thingz RAT-ling in thee EN-jin", "ˈrætəl", "the + voyelle → « thee »"], "To eavesdrop": ["Were you eavesdropping on us?", "wer yuh EEVZ-drah-ping ah-NUS", "ˈivzˌdrɑp", "on us → « ah-NUS »"], "Head-on": ["Let's tackle the problem head-on.", "lets TA-kul thuh PRAH-blum hed-AHN", "ˌhɛdˈɑn", "problem → « PRAH-blum »"], "To take the stage": ["She took the stage and the crowd went wild.", "shee TOOK thuh STAYJ n thuh KROWD went WAILD", "teɪk ðə ˈsteɪdʒ", "and → « n »"], "Intercourse": ["Careful: intercourse is rarely used in its old meaning.", "KER-ful IN-ter-kors iz RER-lee yoozd in its OHLD MEE-ning", "ˈɪntərˌkɔrs", "Accent sur IN ; sens courant aujourd'hui : sexuel"], "hold out on [sb]": ["Come on, don't hold out on me!", "kuh-MAHN dohnt hohl-DOW-dahn MEE", "ˌhoʊld ˈaʊt ɑn", "hold out on me → tout lié : « hohl-DOW-dahn-mee »"], "To frown": ["Why are you frowning?", "WAI er yuh FROW-ning", "fraʊn", "are you → « er yuh »"], "Settle": ["Let's settle this once and for all.", "lets SE-dul this WUN-sen fer AWL", "ˈsɛtəl", "settle → « SE-dul » ; once and → « WUN-sen »"], "fathom [sth]": ["I can't fathom why he did that.", "ai KANT FA-thum wai hee DID that", "ˈfæðəm", "TH sonore comme dans « this »"], "Steward": ["Ask the steward for a blanket.", "ASK thuh STOO-erd fer uh BLAN-kit", "ˈstuərd", "for a → « fer uh »"], "To soothe [sb/sth]": ["Music always soothes me.", "MYOO-zik AWL-wayz SOODHZ mee", "suð", "soothe : TH sonore final"], "To spark [sth]": ["Her comment sparked a huge debate.", "her KAH-ment SPAR-ktuh HYOOJ di-BAYT", "spɑrk", "sparked a → « SPAR-ktuh »"], "shift [sth]": ["We need to shift our focus.", "wee NEE-duh SHIF-tar FOH-kus", "ʃɪft", "need to → « NEE-duh » ; our → « ar »"], "to mingle": ["Go mingle, meet some people!", "goh MING-gul MEET sum PEE-pul", "ˈmɪŋɡəl", "some → « sum » (forme faible)"], "to ship [sb]": ["Everyone ships those two characters.", "EV-ree-wun SHIPS thohz TOO KER-ik-terz", "ʃɪp", "characters : le ch se dit « k »"], "though": ["It was fun, though.", "it wuz FUN thoh", "ðoʊ", "though en fin de phrase = « quand même »"], "doable": ["It's tight, but it's doable.", "its TAIT but its DOO-uh-bul", "ˈduəbəl", "3 syllabes : DOO-uh-bul"], "to depict": ["The movie depicts life in the nineties.", "thuh MOO-vee di-PIKTS LAIF in thuh NAIN-teez", "dɪˈpɪkt", "depicts : 3 consonnes finales « kts »"], "to cut sb some slack": ["Cut me some slack, it's my first day.", "KUT mee sum SLAK its my FERST DAY", "kʌt ... səm ˈslæk", "first day : le t s'efface → « FERS-DAY »"], "to back sb up": ["Thanks for backing me up in there.", "THANKS fer BA-king mee UP in THER", "ˌbæk ˈʌp", "thanks : TH sourd + « æ »"], "add-on": ["The add-on costs ten bucks.", "thee A-dahn KAWSTS TEN BUKS", "ˈædˌɑn", "add-on → « A-dahn »"], "to be on edge": ["I've been on edge all week.", "aiv bin ah-NEJ awl WEEK", "ɑn ˈɛdʒ", "on edge → « ah-NEJ » ; been → « bin »"], "to meddle": ["Stop meddling in my life.", "STAHP MED-ling in my LAIF", "ˈmɛdəl", "meddling : 2 syllabes"], "to belittle": ["Don't belittle what she's done.", "dohnt buh-LI-dul wut sheez DUN", "bɪˈlɪtəl", "belittle → « buh-LI-dul » (flap T)"], "playwright": ["Shakespeare is the most famous playwright ever.", "SHAYK-speer iz thuh mohst FAY-mus PLAY-rait EV-er", "ˈpleɪˌraɪt", "Le w de wright est muet"], "to bump heads": ["We bump heads, but we respect each other.", "wee BUMP HEDZ but wee ri-SPEKT ee-CHUH-ther", "ˈbʌmp ˈhɛdz", "each other → « ee-CHUH-ther »"], "to rack one's brain": ["I'm racking my brain for an answer.", "aim RA-king my BRAYN fer-uh-NAN-ser", "ræk wʌnz ˈbreɪn", "for an answer → « fer-uh-NAN-ser »"], "to mess up": ["I really messed up this time.", "ai RIL-ee MES-TUP this TAIM", "ˌmɛs ˈʌp", "messed up → « MES-TUP »"], "full-fledged": ["She's now a full-fledged data scientist.", "sheez NOW uh FUL-flejd DAY-duh SAI-un-tist", "ˌfʊlˈflɛdʒd", "data → « DAY-duh » (flap T)"], "to alienate": ["Don't alienate your best clients.", "dohnt AY-lee-uh-nayt yer BEST KLAI-ints", "ˈeɪliəˌneɪt", "alienate : accent sur AY"], "to give sb a nudge": ["Give him a nudge if he falls asleep.", "GI-vi-muh NUJ if hee fawlz uh-SLEEP", "ɡɪv ə ˈnʌdʒ", "give him a → « GI-vi-muh » (h effacé)"], "a nudge": ["Sometimes all you need is a little nudge.", "SUM-taimz AWL yuh NEED iz uh LI-dul NUJ", "nʌdʒ", "nudge : « u » court comme dans « but »"], "rail yard": ["The old rail yard is now a park.", "thee OHLD RAYL-yard iz NOW uh PARK", "ˈreɪl ˌjɑrd", "old : le d presque avalé"], "hobo": ["The hobo jumped on the freight train.", "thuh HOH-boh JUMPT ahn thuh FRAYT TRAYN", "ˈhoʊboʊ", "freight : gh muet → « frayt »"], "to relieve sb of their duties": ["He was relieved of his duties yesterday.", "hee wuz ri-LEEVD uv iz DOO-deez YES-ter-day", "rɪˈliv", "duties → « DOO-deez » en US ; his → « iz »"], "to swing out": ["The door swung out into the hallway.", "thuh DOR SWUNG OWT IN-tuh thuh HAWL-way", "ˌswɪŋ ˈaʊt", "into → « IN-tuh »"], "to get strung up": ["In old westerns, outlaws got strung up.", "in OHLD WES-ternz OWT-lawz gaht STRUNG UP", "ɡɛt ˌstrʌŋ ˈʌp", "got → « gaht » (o ouvert en US)"], "thrill": ["What a thrill!", "WUH-duh THRIL", "θrɪl", "What a → « WUH-duh » (flap T)"], "thrilling": ["The final was absolutely thrilling.", "thuh FAI-nul wuz AB-suh-loot-lee THRI-ling", "ˈθrɪlɪŋ", "absolutely : accent sur AB"], "to bestow (sth on sb)": ["The award was bestowed on her last year.", "thee uh-WORD wuz bi-STOHD ahn her LAST YEER", "bɪˈstoʊ", "award → « uh-WORD »"], "to grant": ["Your request has been granted.", "yer ri-KWEST hiz bin GRAN-tid", "ɡrænt", "has been → « hiz bin »"], "a grant": ["She got a research grant.", "shee GAH-duh REE-serch GRANT", "ɡrænt", "got a → « GAH-duh » (flap T)"], "take for granted": ["We take clean water for granted.", "wee TAYK KLEEN WAH-der fer GRAN-tid", "teɪk fər ˈɡræntɪd", "water → « WAH-der »"], "to ground (a flight)": ["All flights were grounded because of the storm.", "AWL FLAITS wer GROWN-did buh-KUZ uv thuh STORM", "ɡraʊnd", "because → « buh-KUZ »"], "grounded": ["You're grounded for a week!", "yer GROWN-did fer uh WEEK", "ˈɡraʊndɪd", "grounded = aussi « privé de sortie »"], "flight": ["My flight got delayed.", "my FLAIT gaht di-LAYD", "flaɪt", "flight : gh muet"], "stay grounded": ["Success hasn't changed him, he stays grounded.", "suk-SES HA-zunt CHAYNJ-dim hee STAYZ GROWN-did", "steɪ ˈɡraʊndɪd", "changed him → « CHAYNJ-dim »"], "to be off the hook": ["You're off the hook this time.", "yer AWF thuh HOOK this TAIM", "ɔf ðə ˈhʊk", "hook : « ou » court"], "to let sb off the hook": ["I'll let you off the hook.", "ail LE-chuh AWF thuh HOOK", "lɛt ... ɔf ðə ˈhʊk", "let you → « LE-chuh »"], "hook": ["That song has a great hook.", "that SAWNG ha-zuh GRAYT HOOK", "hʊk", "has a → « ha-zuh »"], "hook up": ["Can you hook up the speakers?", "kin yuh HOO-KUP thuh SPEE-kerz", "ˌhʊk ˈʌp", "Attention : hook up a aussi un sens sexuel"], "hold (verb)": ["Hold my bag for a sec.", "HOHLD my BAG fer uh SEK", "hoʊld", "sec = second, très oral"], "hold (noun)": ["Grab hold of the rope.", "GRAB HOHL-duv thuh ROHP", "hoʊld", "hold of → « HOHL-duv »"], "to get hold of sb": ["I couldn't get hold of him all day.", "ai KUD-nt GET HOHL-duv-im awl DAY", "ɡɛt ˈhoʊld əv", "couldn't → « KUD-nt »"], "to have a hold on sb": ["She still has a hold on him.", "shee STIL HA-zuh HOHL-dah-nim", "ˈhoʊld ɑn", "hold on him → « HOHL-dah-nim »"], "to get a hold of yourself": ["Get a hold of yourself!", "GE-duh HOHL-duv yer-SELF", "ɡɛt ə ˈhoʊld əv", "Get a → « GE-duh » (flap T)"], "hold on": ["Hold on, let me pull up the file.", "hohl-DAHN, LEM-mee PUHL UHP thuh FAIL", "hoʊld ˈɑːn", "hold on → « hohl-DAHN », lié ; pull → L sombre"], "hold up": ["What's the hold-up?", "wuts thuh HOHL-dup", "ˈhoʊldˌʌp", "hold-up → « HOHL-dup »"], "hold back": ["Don't hold back, tell me everything.", "dohnt hohld BAK TEL mee EV-ree-thing", "ˌhoʊld ˈbæk", "back : « æ » ouvert"], "hold out": ["Hold out a little longer.", "hohl-DOW-duh LI-dul LAWN-ger", "ˌhoʊld ˈaʊt", "out a → « OW-duh »"], "bereaved": ["Our thoughts are with the bereaved family.", "ar THAWTS er with thuh buh-REEVD FAM-lee", "bɪˈrivd", "family : 2 syllabes « FAM-lee »"], "the bereaved": ["The bereaved need time and support.", "thuh buh-REEVD NEED TAIM n suh-PORT", "ðə bɪˈrivd", "support : accent sur PORT"], "bereavement": ["She's on bereavement leave this week.", "sheez ahn buh-REEV-ment LEEV this WEEK", "bɪˈrivmənt", "leave : i long « LEEV »"], "grief": ["Everyone handles grief differently.", "EV-ree-wun HAN-dulz GREEF DI-frunt-lee", "ɡrif", "differently : 3 syllabes « DI-frunt-lee »"], "mourning": ["The whole country is in mourning.", "thuh HOHL KUN-tree iz in MOR-ning", "ˈmɔrnɪŋ", "mourning = morning à l'oral !"], "meticulous": ["She's meticulous about every detail.", "sheez muh-TI-kyuh-lus uh-BOW-dev-ree DEE-tayl", "məˈtɪkjələs", "about every → « uh-BOW-dev-ree » ; detail : DEE-tayl en US"], "meticulously": ["He meticulously checked every line.", "hee muh-TI-kyuh-lus-lee CHEKT EV-ree LAIN", "məˈtɪkjələsli", "checked : 1 syllabe « CHEKT »"], "to corner": ["The reporter cornered him after the meeting.", "thuh ri-POR-der KOR-nerd-im AF-ter thuh MEE-ding", "ˈkɔrnər", "reporter, meeting : flap T"], "cornered": ["I felt cornered.", "ai FELT KOR-nerd", "ˈkɔrnərd", "Deux R américains bien prononcés"], "corner": ["Meet me at the corner.", "MEET mee a-thuh KOR-ner", "ˈkɔrnər", "at the → « a-thuh »"], "to impeach": ["Congress voted to impeach the president.", "KAHN-gris VOH-did tuh im-PEECH thuh PRE-zuh-dent", "ɪmˈpitʃ", "voted → « VOH-did »"], "impeachment": ["The impeachment trial starts Monday.", "thee im-PEECH-ment TRAI-ul STARTS MUN-day", "ɪmˈpitʃmənt", "trial : 2 syllabes « TRAI-ul »"], "a fine": ["I got a fine for speeding.", "ai GAH-duh FAIN fer SPEE-ding", "faɪn", "got a → « GAH-duh »"], "to fine": ["They fined him two hundred dollars.", "they FAIN-dim TOO HUN-drid DAH-lerz", "faɪn", "dollars : « DAH-lerz » en US"], "fine print": ["Always read the fine print.", "AWL-wayz REED thuh FAIN PRINT", "ˌfaɪn ˈprɪnt", "always : accent sur AWL"], "walk a fine line": ["You're walking a fine line here.", "yer WAW-king uh FAIN LAIN heer", "wɔk ə faɪn ˈlaɪn", "walk : le l est muet"], "scorched": ["The grass was scorched by the sun.", "thuh GRAS wuz SKORCHT bai thuh SUN", "skɔrtʃt", "grass : « æ » en US"], "to scorch": ["Careful, you'll scorch the pan.", "KER-ful yool SKORCH thuh PAN", "skɔrtʃ", "careful → « KER-ful »"], "scorched rice": ["The scorched rice at the bottom is the best part.", "thuh SKORCHT RAIS a-thuh BAH-dum iz thuh BEST PART", "ˌskɔrtʃt ˈraɪs", "bottom → « BAH-dum » (flap T)"], "scorched earth": ["They used a scorched-earth strategy.", "they YOOZ-duh SKORCHT-ERTH STRA-duh-jee", "ˌskɔrtʃt ˈɝθ", "strategy → « STRA-duh-jee »"], "scorching hot": ["It's scorching hot out there.", "its SKOR-ching HAHT OWT ther", "ˈskɔrtʃɪŋ ˈhɑt", "hot : « ah » ouvert en US"], "cork": ["Pop the cork, we're celebrating!", "PAHP thuh KORK weer SE-luh-bray-ding", "kɔrk", "celebrating → « SE-luh-bray-ding »"], "to snoop": ["Stop snooping around my room.", "STAHP SNOO-ping uh-ROWND my ROOM", "snup", "around → « uh-ROWND »"], "to squat": ["He doesn't know squat about cars.", "hee DUZ-nt NOH SKWAHT uh-BOWT KARZ", "skwɑt", "squat → « SKWAHT »"], "to cauterise": ["The doctor had to cauterize the wound.", "thuh DAHK-ter HAD tuh KAW-duh-raiz thuh WOOND", "ˈkɔtəˌraɪz", "wound (blessure) → « woond »"], "pull toward": ["I feel a strong pull toward music.", "ai FEE-luh STRAWNG PUL tord MYOO-zik", "pʊl tɔrd", "toward → « tord », une seule syllabe"], "to bottle sth up": ["Don't bottle it up, just tell me.", "dohnt BAH-duh-li-DUP just TEL mee", "ˌbɑtəl ˈʌp", "bottle it up → « BAH-duh-li-DUP », tout lié"], "put a lid on it": ["Can you put a lid on it for five minutes?", "kin yuh PUH-duh LI-dah-nit fer FAIV MI-nits", "pʊt ə ˈlɪd ɑn ɪt", "put a → « PUH-duh » ; lid on it → « LI-dah-nit »"], "to pry into": ["I don't want to pry, but are you okay?", "ai DOHN-uh PRAI but er yuh oh-KAY", "praɪ", "don't want to → « DOHN-uh »"], "nosy": ["Don't be so nosy!", "dohnt bee SOH NOH-zee", "ˈnoʊzi", "nosy : « s » se dit « z »"], "poke your nose into": ["Stop poking your nose into my business.", "STAHP POH-king yer NOHZ IN-tuh my BIZ-nis", "poʊk jər ˈnoʊz", "business : 2 syllabes « BIZ-nis »"], "to crouch down": ["She crouched down to tie her shoes.", "shee KROWCHT DOWN tuh TAI-er SHOOZ", "ˌkraʊtʃ ˈdaʊn", "tie her → « TAI-er » (h effacé)"], "not know the first thing about": ["He doesn't know the first thing about football.", "hee DUZ-nt NOH thuh FERST THING uh-BOWT FUT-bawl", "nɑt noʊ ðə ˈfɝst θɪŋ", "first thing : le t s'efface → « FERS-THING »"], "become desensitised to": ["You become desensitized to it after a while.", "yoo bi-KUM dee-SEN-suh-taiz-duh-dit AF-ter uh WAIL", "diˈsɛnsəˌtaɪzd", "desensitized to it → tout lié"], "be drawn to": ["I've always been drawn to big cities.", "aiv AWL-wayz bin DRAWN tuh BIG SI-deez", "drɔn", "cities → « SI-deez » (flap T)"], "gravitate toward": ["I tend to gravitate toward data-heavy projects.", "ai TEN-duh GRA-vuh-tayt tord DAY-duh HE-vee PRAH-jekts", "ˈɡrævəˌteɪt", "tend to → « TEN-duh » ; data → « DAY-duh »"], "go down": ["What went down at the meeting yesterday?", "WUHT WEN DOWN at thuh MEE-ding YES-tur-day", "ɡoʊ ˈdaʊn", "what went → le T de what tombe : « wuh-WEN » ; meeting → « MEE-ding »"], "for some reason": ["For some reason, the pipeline broke overnight.", "fur suhm REE-zun, thuh PAIP-lain BROHK oh-vur-NAIT", "fər səm ˈriːzən", "for some → « fur-suhm », for se réduit ; reason → le s se dit « z »"], "sniffing": ["Stop sniffing, just blow your nose!", "STAHP SNIF-ing, jus BLOH yur NOHZ", "ˈsnɪfɪŋ", "just blow → le T de just tombe ; nose → « nohz », le s se dit « z »"], "grub": ["I'm starving — let's grab some grub.", "aim STAR-ving, lets GRAB suhm GRUHB", "ɡrʌb", "grab ≠ grub : « GRAB » (a ouvert) puis « GRUHB » (u comme dans « fun »)"], "make one's way": ["She made her way through the crowded subway.", "shee MAY-dur WAY throo thuh KROW-did SUHB-way", "meɪk wʌnz ˈweɪ", "made her → « MAY-dur », le h de her disparaît ; crowded → « KROW-did »"], "wander off": ["Don't let the kids wander off at the park.", "DOHN let thuh KIDZ WAHN-dur AWF at thuh PARK", "ˈwɑːndər ˈɔːf", "wander → « WAHN-dur » (pas « wonder » : « WUHN-dur ») ; wander off se lie"], "budge": ["I tried to move the desk but it won't budge.", "ai TRAI-duh MOOV thuh DESK buh-dit WOHNT BUHJ", "bʌdʒ", "but it → « buh-dit » (T flap) ; budge → « BUHJ », le dge comme dans « djinn »"], "drop off": ["Can you drop me off at the station?", "kuhn-yuh DRAHP mee AWF at thuh STAY-shun", "drɑːp ˈɔːf", "can you → « kuhn-yuh » ; drop → o ouvert, comme dans « pâte »"], "nod off": ["I nodded off during the last episode.", "ai NAH-di-DAWF DUR-ing thuh LAST EP-uh-sohd", "nɑːd ˈɔːf", "nodded off → « NAH-di-DAWF », tout lié ; episode → accent sur EP"], "toothpick": ["He was chewing on a toothpick like a cowboy.", "hee wuz CHOO-ing ah-nuh TOOTH-pik laik-uh KOW-boy", "ˈtuːθpɪk", "toothpick → le th, langue entre les dents, puis « pik » ; on a → « ah-nuh »"], "run by": ["Let me run this by my manager first.", "LEM-mee RUHN this BAI mai MAN-uh-jur FURST", "rʌn ˈbaɪ", "let me → « LEM-mee » ; manager → accent sur MAN, pas sur ger"], "quote": ["Can you get me a quote for the repair?", "kuhn-yuh GED-mee uh KWOHT fur thuh ri-PAIR", "kwoʊt", "get me → « GED-mee » ; quote → « KWOHT », le qu se dit « kw »"], "leverage": ["We should leverage this dataset for the audit.", "wee shud LEV-ur-ij this DAY-duh-set fur thee AW-dit", "ˈlevərɪdʒ", "leverage US → « LEV-ur-ij » (UK : « LEE-vur-ij ») ; data → « DAY-duh »"], "have the upper hand": ["After that reveal, she had the upper hand.", "AF-tur that ri-VEEL, shee HAD thee UH-pur HAND", "ðə ˈʌpər ˈhænd", "the upper → « thee » devant voyelle ; upper → « UH-pur »"], "get an earful": ["I got an earful from my manager about the deadline.", "ai GAH-duh-NEER-ful frum mai MAN-uh-jur uh-BOWT thuh DED-lain", "ˈɪrfʊl", "got an earful → « GAH-duh-NEER-ful », tout lié avec un T flap"], "be under the impression": ["I was under the impression we had agreed on Friday.", "ai wuz UHN-dur thee im-PRESH-un wee hed uh-GREED ahn FRAI-day", "ɪmˈpreʃən", "impression → accent sur PRESH ; we had → « wee-ed », le h tombe"], "get tricky": ["Things get tricky when you add edge cases.", "THINGZ get TRIK-ee wen yuh AD EJ KAY-siz", "ˈtrɪki", "get tricky → le T de get est retenu ; edge cases → « EJ KAY-siz »"], "hatch": ["They hatched a plan to sneak out early.", "thay HACH-tuh PLAN tuh SNEE-kowt UR-lee", "hætʃ", "hatched a → « HACH-tuh » ; sneak out → « SNEE-kowt », lié"], "help out": ["Can you help out with the migration script?", "kuhn-yuh hel-POWT with thuh mai-GRAY-shun SKRIPT", "help ˈaʊt", "help out → « hel-POWT » ; migration US → « mai-GRAY-shun »"], "factory": ["She got a job at a car factory.", "shee GAH-duh JAHB a-duh KAR FAK-tuh-ree", "ˈfæktəri", "factory → deux syllabes et demie, le o disparaît presque ; got a → « GAH-duh »"], "plant": ["They're shutting down the plant next year.", "thair SHUH-ding DOWN thuh PLANT NEKS-yeer", "plænt", "shutting → « SHUH-ding » ; plant US → a très ouvert, entre « è » et « a »"], "facility": ["The company is opening a new facility in Texas.", "thuh KUHM-puh-nee iz OH-puh-ning uh NOO fuh-SIL-uh-dee in TEK-sus", "fəˈsɪləti", "facility → accent sur SIL, le T final devient un D : « fuh-SIL-uh-dee »"], "mill": ["The town grew up around the old steel mill.", "thuh TOWN groo-UHP uh-ROWN thee OHLD STEEL MIL", "mɪl", "mill → i court, L sombre au fond de la bouche ; grew up → « groo-UHP »"], "sweatshop": ["Those cheap clothes were made in sweatshops.", "thohz CHEEP KLOHZ wur MAY-din SWET-shahps", "ˈswetʃɑːp", "sweat → « SWET » (pas « sweet ») ; clothes → « KLOHZ », le th disparaît"], "works": ["He spent forty years at the gas works.", "hee SPENT FOR-dee YEERZ at thuh GAS WURKS", "wɝːks", "forty → « FOR-dee » ; works → « WURKS », R bien prononcé"], "stop sb from doing": ["Nothing's gonna stop me from going.", "NUH-thingz GUH-nuh STAHP mee frum GOH-ing", "stɑːp … frəm", "gonna → « GUH-nuh » ; from se réduit à « frum »"], "prevent sb from doing": ["The fog prevented the plane from landing.", "thuh FAWG pruh-VEN-id thuh PLAYN frum LAN-ding", "prɪˈvent", "prevented → « pruh-VEN-id », le T disparaît après le N"], "keep sb from doing": ["Don't let me keep you from your work.", "DOHN LEM-mee KEE-pyoo frum yur WURK", "kiːp … frəm", "keep you → « KEE-pyoo », lié ; work → « WURK », pas « walk »"], "hinder": ["The bad weather hindered the rescue efforts.", "thuh BAD WEH-thur HIN-durd thuh RES-kyoo EF-urts", "ˈhɪndər", "hinder → « HIN-dur », i court ; efforts → accent sur EF"], "deter": ["High prices deter people from buying.", "HAI PRAI-siz di-TUR PEE-pul frum BAI-ing", "dɪˈtɝː", "deter → accent sur TUR, R final bien prononcé ; ne pas confondre avec defer"], "thwart": ["Police thwarted the attack.", "puh-LEES THWOR-did thee uh-TAK", "θwɔːrt", "thwart → th langue entre les dents, puis « WORT » ; thwarted → « THWOR-did »"], "preclude": ["His injury precludes him from playing.", "hiz IN-juh-ree pri-KLOODZ im frum PLAY-ing", "prɪˈkluːd", "precludes him → « pri-KLOODZ-im », le h tombe ; injury → accent sur IN"]};
+const PRON_DATA = {"a debtor":["The debtor paid the invoice three days late.","thuh DÈ-ter PÉÏD thee IN-voïss THRII DÉÏZ LÉÏT","ˈdɛtər","B muet : « DÈ-ter ». three : langue entre les dents, pas « tri » ni « sri »."],"an invoice":["Is this the third invoice this month?","iz THIS thuh THEURD IN-voïss THIS MEUNTH","ˈɪnvɔɪs","Accent sur IN. this (th sonore, vibre) ≠ third / month (th sourd, soufflé)."],"roughly":["It's worth roughly thirty thousand euros.","its WEURTH REUF-li THEUR-di THAOU-zend YOU-roz","ˈrʌfli","Quatre TH soufflés : worth, thirty, thousand. Le R américain : langue en arrière, sans toucher."],"figures":["These figures are for this year, not last year.","THIIZ FI-gyeurz ar fer THIS YIR nat LAST YIR","ˈfɪɡjərz","these (i long, « thiiz ») ≠ this (i court). Le R final de year se prononce."],"to schedule a call":["Let's schedule a call with the other team.","lets SKÈ-djoul uh KAWL with thee EU-ther TIIM","ˈskɛdʒuːl","US : « SKÈ-djoul ». other : th sonore, pas « ozer ». team : i long."],"revenue":["Their revenue is higher than last quarter.","thèr RÈ-veu-nou iz HAÏ-er than last KWOR-der","ˈrɛvənuː","Accent sur RÈ. quarter : le T devient un petit D, R final prononcé."],"to share my screen":["Can you see the sheet I'm sharing on my screen?","ken you SII thuh CHIIT aïm CHÈ-ring an maï SKRIIN","ʃɪər","sheet, see, screen : I LONG, bien tenu. Un i court ici change le mot."],"accounts receivable":["We need to reach the team that handles receivables.","wi NIID tuh RIITCH thuh TIIM that HAN-delz ri-SII-veu-belz","rɪˈsiːvəbəl","need, reach, team, re-CEI-vable : i longs. Accent sur SII."],"to follow up":["I'll follow up with them on Thursday.","aïl FA-lo EUP with them an THEURZ-déï","ˈfɑloʊ ʌp","with them : deux th sonores à la suite. Thursday : th soufflé + « eur » avec R."],"next steps":["First, thanks for joining. Let's go through the next steps.","FEURST thanks fer DJOÏ-ning lets go THROU thuh nèkst STÈPS","nɛkst stɛps","thanks, through : th soufflé + R pour through (« throu »). first : le R s'entend."],"a credit limit":["We can't fill the form until the limit is live.","wi KANT FIL thuh FORM eun-TIL thuh LI-mit iz LAÏV","ˈlɪmɪt","fill, limit, until, is : i COURTS. live (adjectif) = « laïv » ; to live = « liv »."],"to walk sb through":["Let me walk you through the whole thing.","lèt mi WAWK you THROU thuh HOL THING","wɔk θru","walk : L muet (« wawk »). through, thing : th soufflé. whole : W muet."],"onboarding":["Our onboarding work starts in March.","aor AN-bor-ding WEURK STARTS in MARTCH","ˈɑnˌbɔrdɪŋ","R partout : our, boarding, work, starts, March. work = « weurk », pas « walk »."],"the due date":["The due date is the thirteenth, not the thirtieth.","thuh DOU DÉÏT iz thuh theur-TIINTH nat thuh THEUR-di-eth","du deɪt","thir-TEENTH (13, accent à la fin) ≠ THIR-tieth (30, accent au début)."],"it depends on":["It depends on whether the other bank agrees.","it di-PÈNDZ an WÈ-ther thee EU-ther BANK eu-GRIIZ","dɪˈpɛndz","Fais entendre le Z final de depends et de agrees : c'est ton -s de 3e personne."],"he doesn't know":["He doesn't know what the client thinks.","hi DEU-zent NO wat thuh KLAÏ-ent THINKS","ˈdʌzənt","H soufflé sur he. know : K muet. thinks : th soufflé + S final audible."], "to rip out": ["They ripped out the old carpet last weekend.", "they RIP-TOWT thee OHLD KAR-pit last WEEK-end", "ˌrɪp ˈaʊt", "ripped out se lie : « RIP-TOWT »"], "to tear out": ["Can you tear out a page for me?", "kin yuh TEH-ROWT uh PAYJ fer mee", "ˌtɛr ˈaʊt", "tear (déchirer) se dit « tèr », pas « tir » (= larme)"], "to yank out": ["He yanked out the plug without saving.", "hee YANK-TOWT thuh PLUG with-OWT SAY-ving", "ˌjæŋk ˈaʊt", "yank : « æ » très ouvert"], "to gut": ["The budget cuts gutted the project.", "thuh BUH-jit KUTS GUH-did thuh PRAH-jekt", "ɡʌt", "gutted → « GUH-did » (flap T)"], "to wrest": ["The investors wrested control from the founder.", "thee in-VES-terz RES-tid kun-TROHL frum thuh FOWN-der", "rɛst", "Le w est muet : « rest »"], "a rip-off": ["Twenty bucks for a coffee? That's a rip-off!", "TWEN-ee BUKS fer uh KAW-fee thats uh RI-pawf", "ˈrɪpˌɔf", "twenty → « TWEN-ee » : le t disparaît après n"], "belly button": ["She got her belly button pierced last summer.", "shee GAHT-er BE-lee BUH-dn PEERST last SUM-er", "ˈbɛli ˌbʌtən", "button → « BUH-dn » : T glottal, avalé"], "navel": ["She has a small tattoo just above her navel.", "shee haz uh SMAWL ta-TOO just uh-BUV-er NAY-vul", "ˈneɪvəl", "above her → « uh-BUV-er » (h effacé)"], "navel-gazing": ["Less navel-gazing, more action.", "LES NAY-vul gay-zing MOR AK-shun", "ˈneɪvəlˌɡeɪzɪŋ", "accent principal sur NAY"], "umbilicus": ["The incision was made just below the umbilicus.", "thee in-SI-zhun wuz MAYD just buh-LOH thee um-BI-li-kus", "ʌmˈbɪlɪkəs", "accent sur BI"], "innie / outie": ["Are you an innie or an outie?", "er yoo-uh-NI-nee or uh-NOW-dee", "ˈɪni / ˈaʊti", "outie → « OW-dee » (flap T)"], "to pull strings": ["His uncle pulled some strings to get him the job.", "hiz UNG-kul PULD sum STRINGZ tuh GE-dim thuh JAHB", "ˌpʊl ˈstrɪŋz", "get him → « GE-dim » (h effacé + flap T)"], "to call in a favor": ["I helped him move, so I'm calling in a favor.", "ai HELP-tim MOOV soh aim KAW-ling i-nuh FAY-ver", "ˌkɔl ɪn ə ˈfeɪvər", "in a → « i-nuh »"], "friends in high places": ["He never gets fined, he has friends in high places.", "hee NE-ver gets FAIND hee haz FREN-zin HAI PLAY-siz", "ˈfrɛndz ɪn ˌhaɪ ˈpleɪsɪz", "friends in → « FREN-zin », le d s'efface"], "parole board": ["The parole board denied his request.", "thuh puh-ROHL BORD di-NAID iz ri-KWEST", "pəˈroʊl ˌbɔrd", "⚠️ faux ami : parole = libération conditionnelle"], "on parole": ["He was released on parole after five years.", "hee wuz ri-LEEST ah-n puh-ROHL AF-ter FAIV YEERZ", "ɑn pəˈroʊl", "accent sur ROHL"], "probation": ["She got two years' probation instead of jail.", "shee GAHT too YEERZ proh-BAY-shun in-STE-duv JAYL", "proʊˈbeɪʃən", "instead of → « in-STE-duv »"], "inquiry": ["The government launched a public inquiry into the scandal.", "thuh GUV-er-ment LAWNCH-tuh PUB-lik IN-kwuh-ree IN-tuh thuh SKAN-dul", "ˈɪnkwəri", "US : surtout IN-kwuh-ree"], "a probe": ["Police opened a probe into the fire.", "puh-LEES OH-pun-duh PROHB IN-tuh thuh FAI-er", "proʊb", "police : accent sur LEES"], "an inquest": ["The inquest ruled his death accidental.", "thee IN-kwest ROOLD iz DETH ak-si-DEN-tul", "ˈɪnkwɛst", "death : TH sourd final"], "carry [sth] out": ["We carried out the analysis last week.", "wee KA-ree-DOWT thee uh-NA-luh-sis last WEEK", "ˌkæri ˈaʊt", "carried out se lie : « KA-ree-DOWT »"], "Realm": ["That's outside the realm of possibility.", "thats owt-SAID thuh RELM uv pah-suh-BI-luh-dee", "rɛlm", "Le « a » ne se prononce pas : « relm »"], "Feeble": ["That's a pretty feeble excuse.", "thats uh PRI-dee FEE-bul ik-SKYOOS", "ˈfibəl", "pretty → « PRI-dee » (flap T)"], "on a par with [sth]": ["Her English is on a par with a native speaker's.", "her ING-lish iz ah-nuh PAR with uh NAY-div SPEE-kerz", "ɑn ə ˈpɑr", "native → « NAY-div » (flap T)"], "Wrinkle": ["There's one little wrinkle in the plan.", "therz WUN LI-dul RING-kul in thuh PLAN", "ˈrɪŋkəl", "Le w de wrinkle est muet"], "Rusty": ["My Spanish is a little rusty.", "my SPA-nish iz uh LI-dul RUS-tee", "ˈrʌsti", "little → « LI-dul »"], "Refrain": ["Please refrain from using your phone.", "pleez ri-FRAYN frum YOO-zing yer FOHN", "rɪˈfreɪn", "your → « yer » (forme faible)"], "Earnestly": ["He earnestly believed it would work.", "hee ER-nist-lee buh-LEEVD it wud WERK", "ˈɝnɪstli", "Le R américain se prononce : « ER »"], "Limb": ["I'm not going out on a limb here.", "aim NAHT GOH-in ow-dah-nuh LIM heer", "lɪm", "Le b de limb est muet ; out on a → « ow-dah-nuh »"], "Upon": ["Once upon a time, there was a king.", "WUNS uh-PAH-nuh TAIM ther wuz uh KING", "əˈpɑn", "upon a → « uh-PAH-nuh »"], "To slack off": ["Stop slacking off and get to work.", "STAHP SLA-king AWF n get tuh WERK", "ˌslæk ˈɔf", "and → « n »"], "To act [sth] out": ["The kids acted out the whole scene.", "thuh KIDZ AK-ti-DOWT thuh hohl SEEN", "ˌækt ˈaʊt", "acted out → « AK-ti-DOWT »"], "Ankle": ["I twisted my ankle playing soccer.", "ai TWIS-tid my AN-kul PLAY-in SAH-ker", "ˈæŋkəl", "En US, soccer = foot ; football = foot américain"], "Quench": ["Nothing quenches your thirst like cold water.", "NUH-thing KWEN-chiz yer THERST laik kohld WAH-der", "kwɛntʃ", "water → « WAH-der » (flap T)"], "Chopstick": ["I still can't use chopsticks properly.", "ai STIL KANT YOOZ CHAHP-stiks PRAH-per-lee", "ˈtʃɑpˌstɪk", "can't en US : « kænt », pas « kahnt »"], "Fierce": ["It's a fierce competition out there.", "its uh FEERS kahm-puh-TI-shun OWT ther", "fɪrs", "Le r final se prononce"], "To dabble in": ["I dabbled in photography for a while.", "ai DA-buld in fuh-TAH-gruh-fee fer uh WAIL", "ˈdæbəl ɪn", "photography : accent sur TAH"], "Crooked": ["Your tie is a little crooked.", "yer TAI iz uh LI-dul KROO-kid", "ˈkrʊkɪd", "crooked (adj.) : 2 syllabes « KROO-kid »"], "grant [sb] [sth]": ["They granted him a second chance.", "they GRAN-ti-dim uh SE-kund CHANS", "ɡrænt", "« æ » ouvert en US : GRAN, pas GRAHN"], "Thrilled": ["I'm thrilled to be here.", "aim THRILD tuh bee HEER", "θrɪld", "TH : langue entre les dents, ni « s » ni « f »"], "Cluttered": ["My desk is so cluttered right now.", "my DESK iz soh KLUH-derd rait NOW", "ˈklʌtərd", "cluttered → « KLUH-derd » (flap T)"], "Oblivious": ["He was totally oblivious to the problem.", "hee wuz TOH-duh-lee uh-BLI-vee-us tuh thuh PRAH-blum", "əˈblɪviəs", "totally → « TOH-duh-lee »"], "Thirst": ["I woke up with a terrible thirst.", "ai WOH-kup with uh TE-ruh-bul THERST", "θɝst", "woke up → « WOH-kup »"], "Reignite": ["The trip reignited their friendship.", "thuh TRIP ree-ig-NAI-did ther FREND-ship", "ˌriɪɡˈnaɪt", "reignited → « ree-ig-NAI-did »"], "To stage [sth]": ["They staged a protest downtown.", "they STAYJ-duh PROH-test down-TOWN", "steɪdʒ", "staged a → « STAYJ-duh »"], "Pinch": ["Add a pinch of salt.", "A-duh PIN-chuv SAWLT", "pɪntʃ", "pinch of → « PIN-chuv »"], "Dwell": ["Don't dwell on the past.", "dohnt DWEL ahn thuh PAST", "dwɛl", "Don't : le t final presque avalé"], "Flaw": ["Every plan has a flaw.", "EV-ree PLAN ha-zuh FLAW", "flɔ", "every : 2 syllabes « EV-ree »"], "Lighter": ["Do you have a lighter?", "duh-yuh HA-vuh LAI-der", "ˈlaɪtər", "lighter → « LAI-der » (flap T)"], "Conceited": ["He's smart, but kind of conceited.", "heez SMART but KAIN-duh kun-SEE-did", "kənˈsitɪd", "kind of → « KAIN-duh »"], "Rattle": ["Something's rattling in the engine.", "SUM-thingz RAT-ling in thee EN-jin", "ˈrætəl", "the + voyelle → « thee »"], "To eavesdrop": ["Were you eavesdropping on us?", "wer yuh EEVZ-drah-ping ah-NUS", "ˈivzˌdrɑp", "on us → « ah-NUS »"], "Head-on": ["Let's tackle the problem head-on.", "lets TA-kul thuh PRAH-blum hed-AHN", "ˌhɛdˈɑn", "problem → « PRAH-blum »"], "To take the stage": ["She took the stage and the crowd went wild.", "shee TOOK thuh STAYJ n thuh KROWD went WAILD", "teɪk ðə ˈsteɪdʒ", "and → « n »"], "Intercourse": ["Careful: intercourse is rarely used in its old meaning.", "KER-ful IN-ter-kors iz RER-lee yoozd in its OHLD MEE-ning", "ˈɪntərˌkɔrs", "Accent sur IN ; sens courant aujourd'hui : sexuel"], "hold out on [sb]": ["Come on, don't hold out on me!", "kuh-MAHN dohnt hohl-DOW-dahn MEE", "ˌhoʊld ˈaʊt ɑn", "hold out on me → tout lié : « hohl-DOW-dahn-mee »"], "To frown": ["Why are you frowning?", "WAI er yuh FROW-ning", "fraʊn", "are you → « er yuh »"], "Settle": ["Let's settle this once and for all.", "lets SE-dul this WUN-sen fer AWL", "ˈsɛtəl", "settle → « SE-dul » ; once and → « WUN-sen »"], "fathom [sth]": ["I can't fathom why he did that.", "ai KANT FA-thum wai hee DID that", "ˈfæðəm", "TH sonore comme dans « this »"], "Steward": ["Ask the steward for a blanket.", "ASK thuh STOO-erd fer uh BLAN-kit", "ˈstuərd", "for a → « fer uh »"], "To soothe [sb/sth]": ["Music always soothes me.", "MYOO-zik AWL-wayz SOODHZ mee", "suð", "soothe : TH sonore final"], "To spark [sth]": ["Her comment sparked a huge debate.", "her KAH-ment SPAR-ktuh HYOOJ di-BAYT", "spɑrk", "sparked a → « SPAR-ktuh »"], "shift [sth]": ["We need to shift our focus.", "wee NEE-duh SHIF-tar FOH-kus", "ʃɪft", "need to → « NEE-duh » ; our → « ar »"], "to mingle": ["Go mingle, meet some people!", "goh MING-gul MEET sum PEE-pul", "ˈmɪŋɡəl", "some → « sum » (forme faible)"], "to ship [sb]": ["Everyone ships those two characters.", "EV-ree-wun SHIPS thohz TOO KER-ik-terz", "ʃɪp", "characters : le ch se dit « k »"], "though": ["It was fun, though.", "it wuz FUN thoh", "ðoʊ", "though en fin de phrase = « quand même »"], "doable": ["It's tight, but it's doable.", "its TAIT but its DOO-uh-bul", "ˈduəbəl", "3 syllabes : DOO-uh-bul"], "to depict": ["The movie depicts life in the nineties.", "thuh MOO-vee di-PIKTS LAIF in thuh NAIN-teez", "dɪˈpɪkt", "depicts : 3 consonnes finales « kts »"], "to cut sb some slack": ["Cut me some slack, it's my first day.", "KUT mee sum SLAK its my FERST DAY", "kʌt ... səm ˈslæk", "first day : le t s'efface → « FERS-DAY »"], "to back sb up": ["Thanks for backing me up in there.", "THANKS fer BA-king mee UP in THER", "ˌbæk ˈʌp", "thanks : TH sourd + « æ »"], "add-on": ["The add-on costs ten bucks.", "thee A-dahn KAWSTS TEN BUKS", "ˈædˌɑn", "add-on → « A-dahn »"], "to be on edge": ["I've been on edge all week.", "aiv bin ah-NEJ awl WEEK", "ɑn ˈɛdʒ", "on edge → « ah-NEJ » ; been → « bin »"], "to meddle": ["Stop meddling in my life.", "STAHP MED-ling in my LAIF", "ˈmɛdəl", "meddling : 2 syllabes"], "to belittle": ["Don't belittle what she's done.", "dohnt buh-LI-dul wut sheez DUN", "bɪˈlɪtəl", "belittle → « buh-LI-dul » (flap T)"], "playwright": ["Shakespeare is the most famous playwright ever.", "SHAYK-speer iz thuh mohst FAY-mus PLAY-rait EV-er", "ˈpleɪˌraɪt", "Le w de wright est muet"], "to bump heads": ["We bump heads, but we respect each other.", "wee BUMP HEDZ but wee ri-SPEKT ee-CHUH-ther", "ˈbʌmp ˈhɛdz", "each other → « ee-CHUH-ther »"], "to rack one's brain": ["I'm racking my brain for an answer.", "aim RA-king my BRAYN fer-uh-NAN-ser", "ræk wʌnz ˈbreɪn", "for an answer → « fer-uh-NAN-ser »"], "to mess up": ["I really messed up this time.", "ai RIL-ee MES-TUP this TAIM", "ˌmɛs ˈʌp", "messed up → « MES-TUP »"], "full-fledged": ["She's now a full-fledged data scientist.", "sheez NOW uh FUL-flejd DAY-duh SAI-un-tist", "ˌfʊlˈflɛdʒd", "data → « DAY-duh » (flap T)"], "to alienate": ["Don't alienate your best clients.", "dohnt AY-lee-uh-nayt yer BEST KLAI-ints", "ˈeɪliəˌneɪt", "alienate : accent sur AY"], "to give sb a nudge": ["Give him a nudge if he falls asleep.", "GI-vi-muh NUJ if hee fawlz uh-SLEEP", "ɡɪv ə ˈnʌdʒ", "give him a → « GI-vi-muh » (h effacé)"], "a nudge": ["Sometimes all you need is a little nudge.", "SUM-taimz AWL yuh NEED iz uh LI-dul NUJ", "nʌdʒ", "nudge : « u » court comme dans « but »"], "rail yard": ["The old rail yard is now a park.", "thee OHLD RAYL-yard iz NOW uh PARK", "ˈreɪl ˌjɑrd", "old : le d presque avalé"], "hobo": ["The hobo jumped on the freight train.", "thuh HOH-boh JUMPT ahn thuh FRAYT TRAYN", "ˈhoʊboʊ", "freight : gh muet → « frayt »"], "to relieve sb of their duties": ["He was relieved of his duties yesterday.", "hee wuz ri-LEEVD uv iz DOO-deez YES-ter-day", "rɪˈliv", "duties → « DOO-deez » en US ; his → « iz »"], "to swing out": ["The door swung out into the hallway.", "thuh DOR SWUNG OWT IN-tuh thuh HAWL-way", "ˌswɪŋ ˈaʊt", "into → « IN-tuh »"], "to get strung up": ["In old westerns, outlaws got strung up.", "in OHLD WES-ternz OWT-lawz gaht STRUNG UP", "ɡɛt ˌstrʌŋ ˈʌp", "got → « gaht » (o ouvert en US)"], "thrill": ["What a thrill!", "WUH-duh THRIL", "θrɪl", "What a → « WUH-duh » (flap T)"], "thrilling": ["The final was absolutely thrilling.", "thuh FAI-nul wuz AB-suh-loot-lee THRI-ling", "ˈθrɪlɪŋ", "absolutely : accent sur AB"], "to bestow (sth on sb)": ["The award was bestowed on her last year.", "thee uh-WORD wuz bi-STOHD ahn her LAST YEER", "bɪˈstoʊ", "award → « uh-WORD »"], "to grant": ["Your request has been granted.", "yer ri-KWEST hiz bin GRAN-tid", "ɡrænt", "has been → « hiz bin »"], "a grant": ["She got a research grant.", "shee GAH-duh REE-serch GRANT", "ɡrænt", "got a → « GAH-duh » (flap T)"], "take for granted": ["We take clean water for granted.", "wee TAYK KLEEN WAH-der fer GRAN-tid", "teɪk fər ˈɡræntɪd", "water → « WAH-der »"], "to ground (a flight)": ["All flights were grounded because of the storm.", "AWL FLAITS wer GROWN-did buh-KUZ uv thuh STORM", "ɡraʊnd", "because → « buh-KUZ »"], "grounded": ["You're grounded for a week!", "yer GROWN-did fer uh WEEK", "ˈɡraʊndɪd", "grounded = aussi « privé de sortie »"], "flight": ["My flight got delayed.", "my FLAIT gaht di-LAYD", "flaɪt", "flight : gh muet"], "stay grounded": ["Success hasn't changed him, he stays grounded.", "suk-SES HA-zunt CHAYNJ-dim hee STAYZ GROWN-did", "steɪ ˈɡraʊndɪd", "changed him → « CHAYNJ-dim »"], "to be off the hook": ["You're off the hook this time.", "yer AWF thuh HOOK this TAIM", "ɔf ðə ˈhʊk", "hook : « ou » court"], "to let sb off the hook": ["I'll let you off the hook.", "ail LE-chuh AWF thuh HOOK", "lɛt ... ɔf ðə ˈhʊk", "let you → « LE-chuh »"], "hook": ["That song has a great hook.", "that SAWNG ha-zuh GRAYT HOOK", "hʊk", "has a → « ha-zuh »"], "hook up": ["Can you hook up the speakers?", "kin yuh HOO-KUP thuh SPEE-kerz", "ˌhʊk ˈʌp", "Attention : hook up a aussi un sens sexuel"], "hold (verb)": ["Hold my bag for a sec.", "HOHLD my BAG fer uh SEK", "hoʊld", "sec = second, très oral"], "hold (noun)": ["Grab hold of the rope.", "GRAB HOHL-duv thuh ROHP", "hoʊld", "hold of → « HOHL-duv »"], "to get hold of sb": ["I couldn't get hold of him all day.", "ai KUD-nt GET HOHL-duv-im awl DAY", "ɡɛt ˈhoʊld əv", "couldn't → « KUD-nt »"], "to have a hold on sb": ["She still has a hold on him.", "shee STIL HA-zuh HOHL-dah-nim", "ˈhoʊld ɑn", "hold on him → « HOHL-dah-nim »"], "to get a hold of yourself": ["Get a hold of yourself!", "GE-duh HOHL-duv yer-SELF", "ɡɛt ə ˈhoʊld əv", "Get a → « GE-duh » (flap T)"], "hold on": ["Hold on, let me pull up the file.", "hohl-DAHN, LEM-mee PUHL UHP thuh FAIL", "hoʊld ˈɑːn", "hold on → « hohl-DAHN », lié ; pull → L sombre"], "hold up": ["What's the hold-up?", "wuts thuh HOHL-dup", "ˈhoʊldˌʌp", "hold-up → « HOHL-dup »"], "hold back": ["Don't hold back, tell me everything.", "dohnt hohld BAK TEL mee EV-ree-thing", "ˌhoʊld ˈbæk", "back : « æ » ouvert"], "hold out": ["Hold out a little longer.", "hohl-DOW-duh LI-dul LAWN-ger", "ˌhoʊld ˈaʊt", "out a → « OW-duh »"], "bereaved": ["Our thoughts are with the bereaved family.", "ar THAWTS er with thuh buh-REEVD FAM-lee", "bɪˈrivd", "family : 2 syllabes « FAM-lee »"], "the bereaved": ["The bereaved need time and support.", "thuh buh-REEVD NEED TAIM n suh-PORT", "ðə bɪˈrivd", "support : accent sur PORT"], "bereavement": ["She's on bereavement leave this week.", "sheez ahn buh-REEV-ment LEEV this WEEK", "bɪˈrivmənt", "leave : i long « LEEV »"], "grief": ["Everyone handles grief differently.", "EV-ree-wun HAN-dulz GREEF DI-frunt-lee", "ɡrif", "differently : 3 syllabes « DI-frunt-lee »"], "mourning": ["The whole country is in mourning.", "thuh HOHL KUN-tree iz in MOR-ning", "ˈmɔrnɪŋ", "mourning = morning à l'oral !"], "meticulous": ["She's meticulous about every detail.", "sheez muh-TI-kyuh-lus uh-BOW-dev-ree DEE-tayl", "məˈtɪkjələs", "about every → « uh-BOW-dev-ree » ; detail : DEE-tayl en US"], "meticulously": ["He meticulously checked every line.", "hee muh-TI-kyuh-lus-lee CHEKT EV-ree LAIN", "məˈtɪkjələsli", "checked : 1 syllabe « CHEKT »"], "to corner": ["The reporter cornered him after the meeting.", "thuh ri-POR-der KOR-nerd-im AF-ter thuh MEE-ding", "ˈkɔrnər", "reporter, meeting : flap T"], "cornered": ["I felt cornered.", "ai FELT KOR-nerd", "ˈkɔrnərd", "Deux R américains bien prononcés"], "corner": ["Meet me at the corner.", "MEET mee a-thuh KOR-ner", "ˈkɔrnər", "at the → « a-thuh »"], "to impeach": ["Congress voted to impeach the president.", "KAHN-gris VOH-did tuh im-PEECH thuh PRE-zuh-dent", "ɪmˈpitʃ", "voted → « VOH-did »"], "impeachment": ["The impeachment trial starts Monday.", "thee im-PEECH-ment TRAI-ul STARTS MUN-day", "ɪmˈpitʃmənt", "trial : 2 syllabes « TRAI-ul »"], "a fine": ["I got a fine for speeding.", "ai GAH-duh FAIN fer SPEE-ding", "faɪn", "got a → « GAH-duh »"], "to fine": ["They fined him two hundred dollars.", "they FAIN-dim TOO HUN-drid DAH-lerz", "faɪn", "dollars : « DAH-lerz » en US"], "fine print": ["Always read the fine print.", "AWL-wayz REED thuh FAIN PRINT", "ˌfaɪn ˈprɪnt", "always : accent sur AWL"], "walk a fine line": ["You're walking a fine line here.", "yer WAW-king uh FAIN LAIN heer", "wɔk ə faɪn ˈlaɪn", "walk : le l est muet"], "scorched": ["The grass was scorched by the sun.", "thuh GRAS wuz SKORCHT bai thuh SUN", "skɔrtʃt", "grass : « æ » en US"], "to scorch": ["Careful, you'll scorch the pan.", "KER-ful yool SKORCH thuh PAN", "skɔrtʃ", "careful → « KER-ful »"], "scorched rice": ["The scorched rice at the bottom is the best part.", "thuh SKORCHT RAIS a-thuh BAH-dum iz thuh BEST PART", "ˌskɔrtʃt ˈraɪs", "bottom → « BAH-dum » (flap T)"], "scorched earth": ["They used a scorched-earth strategy.", "they YOOZ-duh SKORCHT-ERTH STRA-duh-jee", "ˌskɔrtʃt ˈɝθ", "strategy → « STRA-duh-jee »"], "scorching hot": ["It's scorching hot out there.", "its SKOR-ching HAHT OWT ther", "ˈskɔrtʃɪŋ ˈhɑt", "hot : « ah » ouvert en US"], "cork": ["Pop the cork, we're celebrating!", "PAHP thuh KORK weer SE-luh-bray-ding", "kɔrk", "celebrating → « SE-luh-bray-ding »"], "to snoop": ["Stop snooping around my room.", "STAHP SNOO-ping uh-ROWND my ROOM", "snup", "around → « uh-ROWND »"], "to squat": ["He doesn't know squat about cars.", "hee DUZ-nt NOH SKWAHT uh-BOWT KARZ", "skwɑt", "squat → « SKWAHT »"], "to cauterise": ["The doctor had to cauterize the wound.", "thuh DAHK-ter HAD tuh KAW-duh-raiz thuh WOOND", "ˈkɔtəˌraɪz", "wound (blessure) → « woond »"], "pull toward": ["I feel a strong pull toward music.", "ai FEE-luh STRAWNG PUL tord MYOO-zik", "pʊl tɔrd", "toward → « tord », une seule syllabe"], "to bottle sth up": ["Don't bottle it up, just tell me.", "dohnt BAH-duh-li-DUP just TEL mee", "ˌbɑtəl ˈʌp", "bottle it up → « BAH-duh-li-DUP », tout lié"], "put a lid on it": ["Can you put a lid on it for five minutes?", "kin yuh PUH-duh LI-dah-nit fer FAIV MI-nits", "pʊt ə ˈlɪd ɑn ɪt", "put a → « PUH-duh » ; lid on it → « LI-dah-nit »"], "to pry into": ["I don't want to pry, but are you okay?", "ai DOHN-uh PRAI but er yuh oh-KAY", "praɪ", "don't want to → « DOHN-uh »"], "nosy": ["Don't be so nosy!", "dohnt bee SOH NOH-zee", "ˈnoʊzi", "nosy : « s » se dit « z »"], "poke your nose into": ["Stop poking your nose into my business.", "STAHP POH-king yer NOHZ IN-tuh my BIZ-nis", "poʊk jər ˈnoʊz", "business : 2 syllabes « BIZ-nis »"], "to crouch down": ["She crouched down to tie her shoes.", "shee KROWCHT DOWN tuh TAI-er SHOOZ", "ˌkraʊtʃ ˈdaʊn", "tie her → « TAI-er » (h effacé)"], "not know the first thing about": ["He doesn't know the first thing about football.", "hee DUZ-nt NOH thuh FERST THING uh-BOWT FUT-bawl", "nɑt noʊ ðə ˈfɝst θɪŋ", "first thing : le t s'efface → « FERS-THING »"], "become desensitised to": ["You become desensitized to it after a while.", "yoo bi-KUM dee-SEN-suh-taiz-duh-dit AF-ter uh WAIL", "diˈsɛnsəˌtaɪzd", "desensitized to it → tout lié"], "be drawn to": ["I've always been drawn to big cities.", "aiv AWL-wayz bin DRAWN tuh BIG SI-deez", "drɔn", "cities → « SI-deez » (flap T)"], "gravitate toward": ["I tend to gravitate toward data-heavy projects.", "ai TEN-duh GRA-vuh-tayt tord DAY-duh HE-vee PRAH-jekts", "ˈɡrævəˌteɪt", "tend to → « TEN-duh » ; data → « DAY-duh »"], "go down": ["What went down at the meeting yesterday?", "WUHT WEN DOWN at thuh MEE-ding YES-tur-day", "ɡoʊ ˈdaʊn", "what went → le T de what tombe : « wuh-WEN » ; meeting → « MEE-ding »"], "for some reason": ["For some reason, the pipeline broke overnight.", "fur suhm REE-zun, thuh PAIP-lain BROHK oh-vur-NAIT", "fər səm ˈriːzən", "for some → « fur-suhm », for se réduit ; reason → le s se dit « z »"], "sniffing": ["Stop sniffing, just blow your nose!", "STAHP SNIF-ing, jus BLOH yur NOHZ", "ˈsnɪfɪŋ", "just blow → le T de just tombe ; nose → « nohz », le s se dit « z »"], "grub": ["I'm starving — let's grab some grub.", "aim STAR-ving, lets GRAB suhm GRUHB", "ɡrʌb", "grab ≠ grub : « GRAB » (a ouvert) puis « GRUHB » (u comme dans « fun »)"], "make one's way": ["She made her way through the crowded subway.", "shee MAY-dur WAY throo thuh KROW-did SUHB-way", "meɪk wʌnz ˈweɪ", "made her → « MAY-dur », le h de her disparaît ; crowded → « KROW-did »"], "wander off": ["Don't let the kids wander off at the park.", "DOHN let thuh KIDZ WAHN-dur AWF at thuh PARK", "ˈwɑːndər ˈɔːf", "wander → « WAHN-dur » (pas « wonder » : « WUHN-dur ») ; wander off se lie"], "budge": ["I tried to move the desk but it won't budge.", "ai TRAI-duh MOOV thuh DESK buh-dit WOHNT BUHJ", "bʌdʒ", "but it → « buh-dit » (T flap) ; budge → « BUHJ », le dge comme dans « djinn »"], "drop off": ["Can you drop me off at the station?", "kuhn-yuh DRAHP mee AWF at thuh STAY-shun", "drɑːp ˈɔːf", "can you → « kuhn-yuh » ; drop → o ouvert, comme dans « pâte »"], "nod off": ["I nodded off during the last episode.", "ai NAH-di-DAWF DUR-ing thuh LAST EP-uh-sohd", "nɑːd ˈɔːf", "nodded off → « NAH-di-DAWF », tout lié ; episode → accent sur EP"], "toothpick": ["He was chewing on a toothpick like a cowboy.", "hee wuz CHOO-ing ah-nuh TOOTH-pik laik-uh KOW-boy", "ˈtuːθpɪk", "toothpick → le th, langue entre les dents, puis « pik » ; on a → « ah-nuh »"], "run by": ["Let me run this by my manager first.", "LEM-mee RUHN this BAI mai MAN-uh-jur FURST", "rʌn ˈbaɪ", "let me → « LEM-mee » ; manager → accent sur MAN, pas sur ger"], "quote": ["Can you get me a quote for the repair?", "kuhn-yuh GED-mee uh KWOHT fur thuh ri-PAIR", "kwoʊt", "get me → « GED-mee » ; quote → « KWOHT », le qu se dit « kw »"], "leverage": ["We should leverage this dataset for the audit.", "wee shud LEV-ur-ij this DAY-duh-set fur thee AW-dit", "ˈlevərɪdʒ", "leverage US → « LEV-ur-ij » (UK : « LEE-vur-ij ») ; data → « DAY-duh »"], "have the upper hand": ["After that reveal, she had the upper hand.", "AF-tur that ri-VEEL, shee HAD thee UH-pur HAND", "ðə ˈʌpər ˈhænd", "the upper → « thee » devant voyelle ; upper → « UH-pur »"], "get an earful": ["I got an earful from my manager about the deadline.", "ai GAH-duh-NEER-ful frum mai MAN-uh-jur uh-BOWT thuh DED-lain", "ˈɪrfʊl", "got an earful → « GAH-duh-NEER-ful », tout lié avec un T flap"], "be under the impression": ["I was under the impression we had agreed on Friday.", "ai wuz UHN-dur thee im-PRESH-un wee hed uh-GREED ahn FRAI-day", "ɪmˈpreʃən", "impression → accent sur PRESH ; we had → « wee-ed », le h tombe"], "get tricky": ["Things get tricky when you add edge cases.", "THINGZ get TRIK-ee wen yuh AD EJ KAY-siz", "ˈtrɪki", "get tricky → le T de get est retenu ; edge cases → « EJ KAY-siz »"], "hatch": ["They hatched a plan to sneak out early.", "thay HACH-tuh PLAN tuh SNEE-kowt UR-lee", "hætʃ", "hatched a → « HACH-tuh » ; sneak out → « SNEE-kowt », lié"], "help out": ["Can you help out with the migration script?", "kuhn-yuh hel-POWT with thuh mai-GRAY-shun SKRIPT", "help ˈaʊt", "help out → « hel-POWT » ; migration US → « mai-GRAY-shun »"], "factory": ["She got a job at a car factory.", "shee GAH-duh JAHB a-duh KAR FAK-tuh-ree", "ˈfæktəri", "factory → deux syllabes et demie, le o disparaît presque ; got a → « GAH-duh »"], "plant": ["They're shutting down the plant next year.", "thair SHUH-ding DOWN thuh PLANT NEKS-yeer", "plænt", "shutting → « SHUH-ding » ; plant US → a très ouvert, entre « è » et « a »"], "facility": ["The company is opening a new facility in Texas.", "thuh KUHM-puh-nee iz OH-puh-ning uh NOO fuh-SIL-uh-dee in TEK-sus", "fəˈsɪləti", "facility → accent sur SIL, le T final devient un D : « fuh-SIL-uh-dee »"], "mill": ["The town grew up around the old steel mill.", "thuh TOWN groo-UHP uh-ROWN thee OHLD STEEL MIL", "mɪl", "mill → i court, L sombre au fond de la bouche ; grew up → « groo-UHP »"], "sweatshop": ["Those cheap clothes were made in sweatshops.", "thohz CHEEP KLOHZ wur MAY-din SWET-shahps", "ˈswetʃɑːp", "sweat → « SWET » (pas « sweet ») ; clothes → « KLOHZ », le th disparaît"], "works": ["He spent forty years at the gas works.", "hee SPENT FOR-dee YEERZ at thuh GAS WURKS", "wɝːks", "forty → « FOR-dee » ; works → « WURKS », R bien prononcé"], "stop sb from doing": ["Nothing's gonna stop me from going.", "NUH-thingz GUH-nuh STAHP mee frum GOH-ing", "stɑːp … frəm", "gonna → « GUH-nuh » ; from se réduit à « frum »"], "prevent sb from doing": ["The fog prevented the plane from landing.", "thuh FAWG pruh-VEN-id thuh PLAYN frum LAN-ding", "prɪˈvent", "prevented → « pruh-VEN-id », le T disparaît après le N"], "keep sb from doing": ["Don't let me keep you from your work.", "DOHN LEM-mee KEE-pyoo frum yur WURK", "kiːp … frəm", "keep you → « KEE-pyoo », lié ; work → « WURK », pas « walk »"], "hinder": ["The bad weather hindered the rescue efforts.", "thuh BAD WEH-thur HIN-durd thuh RES-kyoo EF-urts", "ˈhɪndər", "hinder → « HIN-dur », i court ; efforts → accent sur EF"], "deter": ["High prices deter people from buying.", "HAI PRAI-siz di-TUR PEE-pul frum BAI-ing", "dɪˈtɝː", "deter → accent sur TUR, R final bien prononcé ; ne pas confondre avec defer"], "thwart": ["Police thwarted the attack.", "puh-LEES THWOR-did thee uh-TAK", "θwɔːrt", "thwart → th langue entre les dents, puis « WORT » ; thwarted → « THWOR-did »"], "preclude": ["His injury precludes him from playing.", "hiz IN-juh-ree pri-KLOODZ im frum PLAY-ing", "prɪˈkluːd", "precludes him → « pri-KLOODZ-im », le h tombe ; injury → accent sur IN"]};
 const PRON_LESSONS = [{"icon": "🔤", "title": "Lire la phonétique de l'app", "intro": "Chaque phrase du SRS Prononciation est réécrite pour un francophone. Les MAJUSCULES marquent la syllabe accentuée : plus forte, plus longue, plus aiguë.", "points": [{"h": "Les sons clés", "txt": "ay = « é-i » (day) · ee = i long (see) · i = i court (sit) · a = « è » très ouvert (cat) · ah = « a » grave (hot) · uh = son neutre (about) · oh = « o-ou » (go) · oo = « ou » (food) · ow = « aou » (now) · ai = « aï » (my) · er = R américain (her) · th = TH · d au milieu d'un mot = flap T.", "ex": [["data", "DAY-duh"], ["about", "uh-BOWT"], ["cat", "KAT"], ["hot", "HAHT"], ["go", "GOH"], ["her", "HER"]]}]}, {"icon": "🥁", "title": "Le flap T", "intro": "Le son le plus typique de l'accent américain. Entre deux voyelles (ou après un R), le T devient un D très rapide : la langue tape une seule fois derrière les dents.", "points": [{"h": "Dans un mot", "txt": "Le T disparaît au profit d'un D léger.", "ex": [["water", "WAH-der"], ["better", "BE-der"], ["city", "SI-dee"], ["party", "PAR-dee"], ["data", "DAY-duh"]]}, {"h": "Entre deux mots", "txt": "Ça marche aussi quand le mot suivant commence par une voyelle.", "ex": [["a lot of", "uh LAH-duv"], ["get it", "GE-dit"], ["what a day", "WUH-duh DAY"], ["put it on", "PU-di-DAHN"]]}, {"h": "Exception", "txt": "Au début d'une syllabe accentuée, le T reste un vrai T.", "ex": [["attack", "uh-TAK"], ["Italian", "i-TAL-yun"]]}]}, {"icon": "😶", "title": "Le schwa et les formes faibles", "intro": "Dans une phrase naturelle, les petits mots grammaticaux non accentués se réduisent à un son neutre « uh ». C'est ce qui donne le rythme américain : les mots importants ressortent, les autres glissent.", "points": [{"h": "Les réductions à connaître", "txt": "to → tuh · for → fer · and → n · of → uv / uh · you → yuh · your → yer · can → kin · was → wuz · them → um.", "ex": [["I want to go", "ai WAH-nuh GOH"], ["a cup of coffee", "uh KUH-puh KAW-fee"], ["rock and roll", "rahk-n-ROHL"], ["tell them", "TE-lum"], ["what are you doing", "WUH-der-yuh DOO-in"]]}]}, {"icon": "🎯", "title": "Accent de mot et de phrase", "intro": "Le français accentue toujours la dernière syllabe. L'anglais en choisit une, et la mettre au mauvais endroit rend le mot difficile à comprendre, même bien prononcé.", "points": [{"h": "Repères utiles", "txt": "Noms de 2 syllabes : souvent la 1re (PROject, REcord). Verbes : souvent la 2e (proJECT, reCORD). Avant -tion, -ic, -ity : l'accent tombe juste avant (inforMAtion, ecoNOmic, aBIlity).", "ex": [["photograph", "FOH-duh-graf"], ["photography", "fuh-TAH-gruh-fee"], ["photographic", "foh-duh-GRA-fik"], ["record (nom)", "RE-kerd"], ["record (verbe)", "ri-KORD"]]}, {"h": "Accent de phrase", "txt": "On accentue les mots porteurs de sens (noms, verbes, adjectifs) et on écrase les mots grammaticaux.", "ex": [["I need to finish the report", "ai NEE-duh FI-nish thuh ri-PORT"], ["It's not a big deal", "its NAH-duh BIG DEEL"]]}]}, {"icon": "🌀", "title": "Le R américain et les voyelles", "intro": "Le R américain n'est ni roulé ni dans la gorge : la langue se recourbe vers l'arrière sans rien toucher. Il se prononce partout, même en fin de mot.", "points": [{"h": "Le R partout", "txt": "Ne l'avale jamais, contrairement à l'anglais britannique.", "ex": [["car", "KAR"], ["her", "HER"], ["work", "WERK"], ["water", "WAH-der"]]}, {"h": "Trois voyelles à distinguer", "txt": "æ (cat) : bouche très ouverte, entre « è » et « a ». ɑ (hot) : « a » grave. ʌ (cut) : « eu » court et relâché.", "ex": [["cat", "KAT"], ["cut", "KUT"], ["cot", "KAHT"], ["can't", "KANT"], ["job", "JAHB"]]}]}, {"icon": "👅", "title": "TH et H : les pièges francophones", "intro": "Ce sont les deux sons qui trahissent le plus vite un accent français.", "points": [{"h": "Le TH", "txt": "Langue entre les dents. TH sourd (think) : on souffle. TH sonore (this) : les cordes vocales vibrent. Jamais « s », « z » ou « f ».", "ex": [["think", "THINK"], ["three", "THREE"], ["this", "DHIS"], ["mother", "MUH-dher"], ["thanks", "THANKS"]]}, {"h": "Le H", "txt": "Toujours soufflé en début de mot accentué, mais effacé dans les pronoms faibles au milieu d'une phrase.", "ex": [["happy", "HA-pee"], ["house", "HOWS"], ["tell him", "TE-lim"], ["give her", "GI-ver"]]}]}, {"icon": "🔗", "title": "Liaisons et réductions", "intro": "Les Américains ne prononcent pas les mots un par un : la consonne finale se colle à la voyelle suivante, et certaines combinaisons fusionnent.", "points": [{"h": "Consonne + voyelle", "txt": "La fin d'un mot se lie au début du suivant.", "ex": [["check it out", "CHE-ki-DOWT"], ["pick it up", "PI-ki-DUP"], ["hold on", "hohl-DAHN"]]}, {"h": "Fusions", "txt": "t + you → « ch » · d + you → « j ».", "ex": [["let you", "LE-chuh"], ["what do you want", "WUH-juh WAHNT"], ["did you eat", "DI-juh EET"]]}, {"h": "Formes orales", "txt": "gonna, wanna, gotta, kinda, lemme : naturelles dans un registre détendu.", "ex": [["I'm going to call you", "aim GUH-nuh KAW-lyuh"], ["let me know", "LEM-mee NOH"], ["I've got to go", "aiv GAH-duh GOH"]]}]}, {"icon": "🤐", "title": "Le T glottal (button, mountain)", "intro": "Devant un « n » non accentué, le T américain n'est ni un T ni un flap : il est avalé. La gorge se ferme une fraction de seconde, puis le « n » sort par le nez.", "points": [{"h": "T + n", "txt": "Dans -tten, -tain, -ton, le T disparaît presque. Ne prononce surtout pas « bu-TONN » à la française.", "ex": [["button", "BUH-dn"], ["mountain", "MOWN-n"], ["certain", "SER-n"], ["Manhattan", "man-HA-n"], ["written", "RI-n"]]}, {"h": "T en fin de mot", "txt": "Devant une consonne, le T final est souvent juste « retenu », sans souffle.", "ex": [["that guy", "tha GAI"], ["not now", "nah NOW"], ["I can't go", "ai KAN GOH"]]}, {"h": "Après n : le T disparaît", "txt": "Après un n, le T s'efface souvent complètement.", "ex": [["twenty", "TWEN-ee"], ["internet", "IN-er-net"], ["wanted", "WAN-id"]]}]}];
 // ═══════════════════════════════════════════════
 // PRONUNCIATION SRS (US accent) + ACCENT LESSONS
@@ -3976,792 +3777,7 @@ function gradeGrammarRule(grade) {
   renderGrammarReviewCard();
 }
 
-const JOURNAL_SESSIONS = [
-  {
-    date: "10 mai 2026",
-    label: "Session TikTok & Quotidien",
-    mots: [
-      ["acordarse","Se souvenir"],["agachado","Accroupi / Baissé"],["agacharse","S'accroupir / Se baisser"],
-      ["alejamiento","Éloignement"],["allí","Là-bas"],["aparcar","Garer / Parquer"],
-      ["arriba","En haut / Là-haut"],["bajar","Descendre / Baisser"],["cara","Visage / Tête"],
-      ["chaval","Gamin / Mec (argot)"],["claro que","Bien sûr que"],["coger","Prendre / Attraper"],
-      ["cogiéndote","En train de te prendre"],["cogidos","Attrapés / Pris"],["girarse","Se retourner"],
-      ["ha cogido","Il a pris (passé composé)"],["he bajado","Je suis descendu"],["ido corriendo","Parti en courant"],
-      ["los he seguido","Je les ai suivis"],["meter","Mettre dans / Fourrer"],["no me podía bajar","Je ne pouvais pas descendre"],
-      ["olvidarse","Oublier"],["pillar / pillado","Coincer / Surprendre en flagrant délit"],["robándote","En train de te voler"],
-      ["rogar","Supplier / Implorer"],["sacar","Sortir / Tirer / Obtenir"],["se me había olvidado","J'avais oublié (plus-que-parfait)"],
-      ["seguir","Suivre / Continuer"],["sepas","Que tu saches (subj. saber)"],["súbete","Monte ! (impératif pronominal)"],
-      ["vaya","Bref / Disons / Quoi (marqueur discursif)"],["ventanilla","Guichet / Vitre de voiture"]
-    ],
-    alertes: [
-      ["Impératif","súbete, ve, pon, sal…"],
-      ["Participe passé","cogido, pillado, ido…"],
-      ["Passé composé","ha cogido, he bajado, los he seguido…"],
-      ["Plus-que-parfait","se me había olvidado…"],
-      ["Pronoms COD antéposés","los he seguido, me podía bajar…"],
-    ]
-  },
-  {
-    date: "11 mai 2026",
-    label: "TikTok · Séries · Apple Watch · Quotidien",
-    es: [
-      ["aburrido/a","Ennuyeux / Ennuyé (estar = s'ennuyer)"],["además","De plus / En plus"],
-      ["ahora","Maintenant"],["amarilla","Jaune (féminin)"],["amigos","Amis"],
-      ["a propósito","D'ailleurs / À propos"],["borrar","Effacer / Supprimer"],
-      ["cerrar","Fermer"],["cine","Cinéma"],["cuántos","Combien (de)"],
-      ["durante","Pendant / Durant"],["escudo","Bouclier / Écu"],["esperar","Attendre / Espérer"],
-      ["eso","Ça / Cela"],["estación","Saison (météo)"],["hasta","Jusqu'à / Même"],
-      ["industria","Industrie"],["inicio","Accueil / Début"],["levantarse","Se lever"],
-      ["lluvia","Pluie"],["mantener","Maintenir / Entretenir"],["me suda","fig. Je m'en fous"],
-      ["memoria","Mémoire"],["mensajes","Messages"],["mezclarse","fig. Se mélanger / Mingler"],
-      ["minuto","Minute"],["montar","litt. Monter / fig. sens sexuel (argot)"],
-      ["moverse","Se bouger / Se déplacer"],["no sé","Je ne sais pas"],
-      ["nuevo","Nouveau / Nouvelle"],["para ti","Pour toi"],["parte","Partie / Épisode"],
-      ["perfil","Profil"],["pirarse","fig. Se barrer / Se tirer (argot)"],
-      ["poco","Peu / Un peu"],["por cierto","D'ailleurs / Au fait"],
-      ["qué","Quoi / Que"],["serie","Série"],["significar","Signifier / Vouloir dire"],
-      ["siguiendo","En train de suivre (gérondif)"],["socializar","Socialiser"],
-      ["sudar","litt. Transpirer / fig. me suda = je m'en fous"],["tanto","Tellement / Autant"],
-      ["temporada","Saison (série TV / sport)"],["tienda","Boutique / Magasin"],
-      ["tocar","Toucher / fig. toca = c'est l'heure de"],["vez","Fois"],
-      ["viva","En vie / Vivant(e)"],["volver a","Re- / Refaire (+ infinitif)"],
-      ["y punto","Et voilà / Point final"]
-    ],
-    ln: [
-      ["kovanda","Vivre / S'asseoir / Rester / Demeurer"],
-      ["kosaka","Tromper / Avoir par la ruse"],
-      ["yango","Ça / Cela / Celui-là"],
-      ["yango wana","C'est pourquoi / Voilà pourquoi"],
-      ["kuna","Là-bas / Là"],
-    ],
-    en: [
-      ["to mingle","litt. Se mélanger / fig. Socialiser / Mingler"],
-      ["to ship sb","fig. Shipper qqn / Vouloir qu'ils soient ensemble"],
-      ["though","Pourtant / Quand même / Cependant"],
-      ["doable","Faisable / Réalisable"],
-      ["to depict","Dépeindre / Représenter / Illustrer"],
-      ["to cut sb some slack","fig. Être indulgent / Lâcher la pression"],
-      ["to back sb up","litt. Reculer / fig. Soutenir qqn / Couvrir"],
-      ["add-on","litt. Ajout / fig. Module / Extension"],
-      ["to be on edge","litt. Être au bord / fig. Être à cran"],
-      ["to meddle","fig. S'ingérer / Se mêler des affaires des autres"],
-      ["to belittle","fig. Rabaisser / Dévaloriser / Diminuer"],
-      ["playwright","Dramaturge / Auteur de pièces de théâtre"],
-      ["to bump heads","litt. Se cogner / fig. Être en désaccord"],
-      ["to rack one's brain","fig. Se creuser la tête"],
-      ["to mess up","litt. Mettre le désordre / fig. Rater / Gâcher"],
-    ],
-    alertes: [
-      ["Impératif 🇪🇸","levántate, muévete, cierra…"],
-      ["Passé composé 🇪🇸","hemos dicho, he bajado…"],
-      ["Gérondif + pronom 🇪🇸","siguiendo, robándote…"],
-    ]
-  },
-  {
-    date: "15 mai 2026",
-    label: "TikTok · Lingala · Anglais ferroviaire",
-    es: [
-      ["acoger","Accueillir / Recevoir chaleureusement"],
-      ["acojonar","Foutre les jetons / Faire flipper (argot vulgaire)"],
-      ["además","De plus / En plus"],
-      ["al parecer","Apparemment"],
-      ["búsqueda","Recherche"],
-      ["comunidad","Communauté"],
-      ["compartir","Partager"],
-      ["desarrollo","Développement"],
-      ["desarrollar","Développer"],
-      ["estación","Saison (météo)"],
-      ["me parece bien","Ça me semble bien / D'accord"],
-      ["parecer","Sembler / Paraître / Avoir l'air"],
-      ["por cierto","D'ailleurs / Au fait"],
-      ["seguidores","Abonnés / Suiveurs"],
-      ["sinceramente","Sincèrement"],
-      ["temporada","Saison (série TV / sport)"],
-      ["un montón","Beaucoup / Un tas / Plein"],
-    ],
-    ln: [
-      ["kobanga","Avoir peur / Craindre"],
-      ["muninga","Ami(e) / Copain / Voisin"],
-      ["mususu / basusu","Autre / Certains / D'autres"],
-      ["kokita","Atterrir / Descendre"],
-      ["elongo","Ensemble / En même temps"],
-      ["kofinga","Insulter / Offenser"],
-      ["mokolo","Jour / Adulte / Ancien"],
-      ["komeka / meka","Essayer / Tester"],
-      ["kotia / tia","Mettre / Poser"],
-      ["pe","Aussi / Et"],
-      ["zemi","Grossesse"],
-      ["nzoto","Corps / Santé"],
-      ["kokuta","Trouver / Rencontrer"],
-      ["kokutana","Se rencontrer mutuellement"],
-      ["mibale","Deux / Tous les deux"],
-      ["kutu","De plus / D'ailleurs"],
-      ["batu / motu","Personne / Gens"],
-      ["kozongela","Recommencer / Répéter"],
-      ["misusu","Certains / D'autres"],
-      ["kaka boye","Comme ça / Juste comme ça"],
-      ["kozonga","Revenir / Retourner"],
-      ["kofuta / futa","Payer"],
-      ["tango","Quand / Temps / Moment"],
-      ["somo","Terreur / Horreur"],
-      ["kati / katikati","À l'intérieur / Entre / Au milieu"],
-      ["kokenda / kende","Aller / Partir"],
-      ["pa","Chez / À la maison de"],
-      ["yambi","Bienvenue !"],
-      ["koyamba","Accueillir / Répondre"],
-      ["motema / mitema","Cœur / Force de caractère"],
-      ["kala","Autrefois / Il y a longtemps"],
-      ["kobemba","Voyager"],
-      ["kobwaka","Jeter / Abandonner"],
-      ["ngunda","Asile / Refuge (argot)"],
-      ["kobika","Être sauvé / Guérir"],
-      ["kosimba","Tenir / Saisir / Coller"],
-      ["lokola","Comme / Tel que"],
-      ["suka / nsuka","Fin / Dernier"],
-      ["kolakisa / lakisa","Montrer / Enseigner"],
-      ["kotanga / tangi","Lire / Compter / Étudier"],
-      ["pamba","Pour rien / En vain"],
-      ["makasi","Fort / Beaucoup (intensificateur)"],
-      ["moko","Un / Seul"],
-    ],
-    en: [
-      ["full-fledged","À part entière / Complet / Pleinement développé"],
-      ["to alienate","litt. Aliéner / fig. Mettre à l'écart / Isoler"],
-      ["a nudge / to give a nudge","Coup de pouce / Pousser doucement"],
-      ["rail yard","Dépôt ferroviaire / Gare de triage"],
-      ["hobo","Vagabond itinérant (sauteur de trains)"],
-      ["to relieve sb of their duties","fig. Relever qqn de ses fonctions"],
-      ["to swing out","litt. Balancer / fig. Se lancer / Sortir en trombe"],
-      ["to get strung up","litt. Se faire pendre / fig. Être à cran"],
-      ["thrill","litt. Frisson / fig. Sensation forte"],
-      ["thrilling","Palpitant / Électrisant"],
-    ],
-    alertes: []
-  },
-  {
-    date: "19 mai 2026",
-    label: "TikTok · Foot · Lingala · Anglais",
-    es: [
-      ["según","Selon / D'après / Ça dépend"],
-      ["avisar","Prévenir / Avertir"],
-      ["cruzarse","Se croiser / Se rencontrer par hasard"],
-      ["el cruce","Croisement / Carrefour"],
-      ["asustar","Faire peur / Effrayer"],
-      ["plantilla","Effectif / Équipe (foot) / Modèle"],
-      ["en general","En général / Dans l'ensemble"],
-      ["repaso","Révision / Relecture"],
-      ["repasar","Réviser / Relire"],
-      ["delantero","Attaquant (foot) / Avant"],
-      ["secar","litt. Sécher / fig. Ghoster / Ignorer"],
-      ["tirar","Lancer / Jeter / Tirer"],
-      ["enterarse","Apprendre une info / Être au courant"],
-      ["de repente","Tout à coup / Soudainement"],
-      ["ganas","Envie / Désir / Motivation"],
-      ["da igual","Ça revient au même / Peu importe"],
-      ["trozo","Morceau / Bout"],
-      ["papel","Papier / Rôle"],
-      ["joder","fig. Emmerder / Merde ! (vulgaire)"],
-      ["puesto","Mis / Placé / Poste / Stand"],
-      ["cuerno","Corne / fig. poner los cuernos = tromper"],
-      ["haber","Avoir (auxiliaire) / Y avoir"],
-      ["hay","Il y a"],
-      ["ha habido","Il y a eu"],
-    ],
-    ln: [
-      ["kotambola","Marcher / Se déplacer / Voyager"],
-      ["kolona / lona","Semer / Planter"],
-      ["biloko / eloko","Choses / Objets / Affaires"],
-      ["koganga","Crier / Hurler"],
-      ["libota","Famille / Clan"],
-      ["liputa / maputa","Pagne / Tissu africain"],
-      ["kobota","Accoucher / Donner naissance"],
-      ["kobotama","Être né / Naître"],
-    ],
-    en: [
-      ["to bestow","litt. Octroyer / Accorder (solennel)"],
-      ["to grant","Accorder / Octroyer"],
-      ["a grant","Subvention / Bourse"],
-      ["take for granted","Tenir pour acquis"],
-    ],
-    alertes: []
-  },
-  {
-    date: "22 mai 2026",
-    label: "TikTok · Foot · Argot · Expressions",
-    es: [
-      ["madurar","Mûrir / Évoluer"],
-      ["maduro","Mûr / Mature"],
-      ["picar","Piquer / Démanger / Hacher"],
-      ["picarse","fig. Se vexer / Se froisser"],
-      ["picante","Piquant / Épicé"],
-      ["meterse","Se mettre dans / S'engager"],
-      ["meterse con","S'en prendre à"],
-      ["meter la pata","fig. Gaffer / Faire une bourde"],
-      ["lobo","Loup"],
-      ["boca","Bouche / Gueule"],
-      ["boca del lobo","Gueule du loup (lieu dangereux)"],
-      ["bromear","Plaisanter / Blaguer"],
-      ["broma","Blague / Plaisanterie"],
-      ["llegar","Arriver / Atteindre"],
-      ["al día de hoy","Au jour d'aujourd'hui"],
-      ["hoy / hoy en día","Aujourd'hui / De nos jours"],
-      ["comerse","Se manger (intensif) / S'envoyer"],
-      ["pedazo","Morceau / Bout (intensificateur argot)"],
-      ["moda","Mode / Tendance"],
-      ["seguir modas","Suivre les tendances"],
-      ["estar de moda","Être à la mode"],
-      ["pasado de moda","Démodé"],
-      ["desplegar","Déployer / Déplier / Dérouler"],
-      ["traer","Apporter (vers ici) ≠ llevar"],
-      ["traído","Apporté (participe passé)"],
-      ["golpe","Coup / Choc / Coup d'État"],
-      ["golpear","Frapper / Cogner"],
-      ["de golpe","D'un coup / Soudainement"],
-      ["ningún / ninguno","Aucun"],
-      ["de ninguna manera","En aucune façon / Pas du tout"],
-    ],
-    ln: [
-      ["kokata / kata","Couper / Raccrocher / Traverser"],
-      ["likambo / makambo","Affaire / Problème / Cas"],
-      ["koteka / teki","Vendre / fig. Trahir"],
-      ["kopanza / panza","Répandre / Diffuser / Disperser"],
-      ["mbangu","Vitesse / ya mbangu = rapide"],
-      ["musika / mosika","Loin / Distance"],
-      ["kotonga","Coudre / Construire / Tresser"],
-      ["tonga / ntonga","Aiguille / Seringue"],
-      ["koganga","Crier / Hurler"],
-    ],
-    en: [],
-    alertes: []
-  },
-  {
-    date: "25 mai 2026",
-    label: "TikTok · Foot · Expressions · Conditionnel",
-    es: [
-      ["cualquier / cualquiera","N'importe quel / Quiconque"],
-      ["en cualquier momento","À tout moment"],
-      ["casi","Presque / Failli"],
-      ["agarrar / agarrarse","Attraper / En venir aux mains"],
-      ["trompada","Coup de poing (argot)"],
-      ["a trompadas","À coups de poing"],
-      ["simio","Singe (registre scientifique)"],
-      ["matar","Tuer"],
-      ["ganar","Gagner / Remporter"],
-      ["fruto","Fruit (sens large / résultat)"],
-      ["fruta","Fruit (qu'on mange)"],
-      ["dar fruto","Porter ses fruits"],
-      ["empate","Match nul / Égalité"],
-      ["empatar","Égaliser / Faire match nul"],
-      ["disparar","Tirer (arme / au but) / Déclencher"],
-      ["disparo","Tir / Coup de feu"],
-      ["dispararse","S'envoler (prix)"],
-      ["sano","Sain / En bonne santé"],
-      ["roble","Chêne"],
-      ["sano como un roble","En pleine forme"],
-      ["sano y salvo","Sain et sauf"],
-      ["cuidado","Attention ! / Soin"],
-      ["cuidar / cuidarse","Prendre soin / Faire attention"],
-      ["cuídate","Prends soin de toi !"],
-      ["descuidar","Négliger"],
-      ["descuido","Négligence / Étourderie"],
-      ["¡descuida!","Ne t'inquiète pas ! (idiomatique)"],
-      ["habría","Il y aurait / J'aurais (conditionnel)"],
-      ["hayamos","Que nous ayons (subjonctif)"],
-    ],
-    ln: [],
-    en: [],
-    alertes: [
-      ["Conditionnel de haber","habría, habrías, habríamos, habrían…"],
-      ["Subjonctif de haber","haya, hayas, hayamos, hayan…"],
-      ["Conditionnel passé","habría + participe (habría ido, habría dicho…)"],
-      ["Apocope cualquier/ningún","devant un nom : cualquier momento, ningún problema"],
-    ]
-  },
-  {
-    date: "28 mai 2026",
-    label: "TikTok · Argot · Verbes irréguliers · Expressions",
-    es: [
-      ["promedio","Moyenne / Lambda"],
-      ["en promedio","En moyenne"],
-      ["esposa / esposo","Épouse / Époux"],
-      ["turbante","Turban"],
-      ["sin","Sans"],
-      ["si (sans accent)","Si (conditionnel)"],
-      ["cabeza","Tête"],
-      ["ver","Voir"],
-      ["lograr","Réussir à / Parvenir à"],
-      ["logro","Réussite / Accomplissement"],
-      ["castigar","Punir / Sanctionner"],
-      ["castigo","Punition / Sanction"],
-      ["querer","Vouloir / Aimer"],
-      ["quiso","Il/elle a voulu (prétérit)"],
-      ["te quiero","Je t'aime (affection)"],
-      ["sin querer","Sans le vouloir"],
-      ["ponerse","Se mettre / Devenir"],
-      ["firme","Ferme / Raide"],
-      ["ponerse firme","Se mettre au garde-à-vous"],
-      ["patria","Patrie"],
-      ["fue","Il fut / Il alla (prétérit ser/ir)"],
-      ["irse","S'en aller / Partir"],
-      ["cama","Lit"],
-      ["me voy a la cama","Je vais me coucher"],
-      ["acostarse","Se coucher"],
-      ["dormirse","S'endormir"],
-      ["pelota","Balle / fig. Lèche / Cirage de pompes"],
-      ["hacer la pelota","fig. Cirer les pompes"],
-      ["vergüenza","Honte / Gêne"],
-      ["vergüencita","Petite honte (diminutif affectif)"],
-      ["vergüenza ajena","Honte par procuration / Cringe"],
-      ["flipar","Kiffer / Halluciner (argot Espagne)"],
-      ["flipante","Hallucinant / Génial"],
-      ["me flipa","Je kiffe / J'adore"],
-      ["jefe / jefa","Chef / Cheffe / Patron / (argot) Papa-Maman"],
-      ["cansado","Fatigué"],
-      ["cansarse de","En avoir marre de"],
-      ["descojonarse","fig. Se marrer / Éclater de rire (argot)"],
-      ["cojonudo","Génial / Super (argot vulgaire positif)"],
-      ["ola","Vague (mer / chaleur)"],
-      ["arruga","Ride / Pli"],
-      ["arrugarse","fig. Se dégonfler"],
-      ["no solo... sino también","Non seulement... mais aussi"],
-      ["a lo mejor","Peut-être / Sans doute"],
-      ["preguntar","Demander / Poser une question"],
-      ["periodista","Journaliste"],
-      ["sino / sino que","Mais (opposition après négation)"],
-      ["subir","Monter / Poster (en ligne)"],
-      ["lamentar","Regretter (soutenu)"],
-      ["chica","Meuf / Nana (interjection)"],
-      ["señora","Madame"],
-      ["pegar","Frapper / Coller / Attraper (maladie)"],
-      ["venir","Venir"],
-      ["ni siquiera","Même pas / Pas même"],
-      ["conocer","Connaître (par expérience)"],
-      ["conozco","Je connais (irrégulier)"],
-      ["despertar / despertarse","(Se) Réveiller"],
-      ["hace nada","À l'instant / Il y a un instant"],
-      ["sortear","Contourner / Éviter / Tirer au sort"],
-      ["sacarle X a alguien","Avoir X d'avance"],
-    ],
-    ln: [],
-    en: [],
-    alertes: [
-      ["Prétérit irrég. querer","quise, quisiste, quiso, quisimos, quisieron"],
-      ["Prétérit ser/ir","fui, fuiste, fue, fuimos, fueron (même forme !)"],
-      ["Présent venir","vengo, vienes, viene, venimos, venís, vienen"],
-      ["Présent conocer","conozco (1ère pers.) + coces, conoce…"],
-      ["Laísmo / Leísmo","Espagne centre : la/le au lieu de le/lo (COI/COD)"],
-      ["No solo... sino (que) también","Structure corrélative essentielle"],
-      ["Sino vs pero","sino = mais après négation, pero = mais après affirmation"],
-      ["Hace + durée","hace nada / hace poco / hace 3 años"],
-    ]
-  },
-  {
-    date: "30 mai 2026",
-    label: "Spider-Man: Brand New Day · Texte long",
-    es: [
-      ["salir con","Sortir avec (qqn)"],
-      ["hermano / hermana","Frère / Sœur"],
-      ["película","Film"],
-      ["salir","Sortir / Paraître (film)"],
-      ["salió","Il est sorti (prétérit)"],
-      ["crítica","Critique"],
-      ["buenísimo","Excellent (superlatif -ísimo)"],
-      ["todo el mundo","Tout le monde"],
-      ["mejor","Meilleur / Mieux"],
-      ["desde que","Depuis que"],
-      ["entrar / entró","Entrer / Est entré"],
-      ["sorprendido","Surpris"],
-      ["aliviado","Soulagé"],
-      ["a la vez","À la fois / En même temps"],
-      ["sobre todo","Surtout"],
-      ["estuvimos hablando","Nous étions en train de parler"],
-      ["convencido","Convaincu"],
-      ["iba a ser","Ça allait être (futur du passé)"],
-      ["fracaso","Échec"],
-      ["por fin","Enfin"],
-      ["verdadero","Vrai / Véritable"],
-      ["otra vez","Une nouvelle fois / À nouveau"],
-      ["balancearse","Se balancer"],
-      ["literalmente","Littéralement"],
-      ["gracioso","Drôle / Marrant"],
-      ["recordar / recuerdo","Se souvenir / Je me souviens"],
-      ["hace como","Il y a environ"],
-      ["de hecho","En fait / En réalité"],
-      ["predecir / predijo","Prédire / Il a prédit (irrég.)"],
-      ["tendríamos","Nous aurions (conditionnel)"],
-      ["alrededor de","Autour de / Vers (environ)"],
-      ["parece que","Il semble que"],
-    ],
-    ln: [],
-    en: [],
-    alertes: [
-      ["Superlatif -ísimo","bueno → buenísimo, grande → grandísimo, fácil → facilísimo"],
-      ["Passé progressif","estar (prétérit) + gérondif : estuvimos hablando"],
-      ["Futur du passé","imparfait de ir + a + inf. : iba a ser un fracaso"],
-      ["Recuerdo + haber + participe","Je me souviens avoir + participe : recuerdo haber hablado"],
-      ["Prétérit irrég. predecir","predije, predijiste, predijo, predijimos, predijeron"],
-    ]
-  },
-  {
-    date: "5 juin 2026",
-    label: "TikTok · Trilingue · Grammaire lingala · Anglais actualité",
-    es: [
-      ["salga","Que je sorte / Qu'il sorte (subj. de salir)"],
-      ["bastante","Assez / Pas mal / Suffisamment"],
-      ["basta","Ça suffit ! / Stop !"],
-      ["vuelta","Tour / Retour / Virage"],
-      ["dar la vuelta","Faire le tour / Retourner qqch"],
-      ["volver","Revenir / Retourner (o→ue, part. vuelto)"],
-      ["descartar","Écarter / Rejeter / Éliminer"],
-      ["descartado","Écarté / Rejeté"],
-      ["será que","Se pourrait-il que… (futur de conjecture)"],
-      ["todavía","Encore / Toujours"],
-      ["todavía no","Pas encore"],
-      ["conseguir","Arriver à / Réussir à (irrég. e→i)"],
-      ["no consigo","Je n'arrive pas à…"],
-      ["imaginar / imaginarse","Imaginer / S'imaginer"],
-      ["niño / niña","Petit garçon / Petite fille / Ma petite (affectif)"],
-      ["dar","Donner (essentiel, très irrég.)"],
-      ["dándole","En lui donnant (gérondif + pronom collé)"],
-      ["dar ganas / miedo / pena","Donner envie / Faire peur / De la peine"],
-    ],
-    ln: [
-      ["kasi","Mais / Cependant"],
-      ["na","À / Avec / Dans / De (préposition polyvalente)"],
-      ["kozua / kozwa","Prendre / Obtenir / Recevoir"],
-      ["na-ko- (futur)","Marqueur du futur 'je vais'"],
-    ],
-    en: [
-      ["to ground (flight)","Clouer au sol / Immobiliser"],
-      ["grounded","Cloué au sol / Puni / Terre-à-terre"],
-      ["to be off the hook","fig. Être tiré d'affaire"],
-      ["hook","Crochet / Hameçon"],
-      ["hold (v/n)","Tenir / Prise / Emprise"],
-      ["get hold of sb","Joindre qqn"],
-      ["have a hold on sb","Avoir de l'emprise sur qqn"],
-      ["hold on / up / back / out","Attendre / Retarder / Retenir / Résister"],
-      ["bereaved / bereavement","Endeuillé / Deuil (perte d'un proche)"],
-      ["meticulous / meticulously","Méticuleux / Minutieusement"],
-      ["to corner / cornered","Acculer / Piéger / Coincé"],
-      ["to impeach / impeachment","Destituer / Mise en accusation"],
-      ["a fine / to fine","Amende / Infliger une amende"],
-      ["fine print","Petits caractères (contrat)"],
-      ["scorched / to scorch","Brûlé / Roussi / Carboniser"],
-      ["scorched rice","Riz brûlé (croûte)"],
-      ["scorched earth","Terre brûlée (stratégie)"],
-    ],
-    alertes: [
-      ["Gérondif + pronom collé 🇪🇸","dando + le → dándole (accent obligatoire) : diciéndote, haciéndolo"],
-      ["Futur du passé (o→ue) volver","vuelvo, vuelves, vuelve, volvemos, vuelven — participe vuelto"],
-      ["Futur en lingala","na-ko- + racine : nakolia, okolia, akolia, tokolia, bokolia, bakolia"],
-      ["Prépositions lingala","na = polyvalent (à/avec/dans/de) selon contexte"],
-      ["No + prétérit querer/conseguir","= refus actif (No consigo = je n'arrive pas / je refuse)"],
-    ]
-  },
-  {
-    date: "29 septembre 2026",
-    label: "Lingala urbain · Argot Kinshasa · TikTok Espagne",
-    es: [
-      ["echar","Chasser / Virer / Jeter / Verser"],
-      ["echar de casa","Virer de chez soi / Mettre à la porte"],
-      ["echar de menos","Manquer (te echo de menos)"],
-      ["echar una mano","Donner un coup de main"],
-      ["echar una siesta","Faire une sieste"],
-      ["echar un vistazo","Jeter un coup d'œil"],
-      ["buitre","Vautour (litt. + fig. profiteur)"],
-      ["anciano / anciana","Personne âgée (respectueux)"],
-      ["personas mayores","Personnes âgées (registre poli)"],
-      ["los que / las que","Ceux / Celles qui"],
-      ["asistir","Assister à / Être présent / Aider"],
-      ["asistencia","Assistance / Présence / Passe décisive (foot)"],
-      ["dañino","Nocif / Nuisible / Néfaste"],
-      ["dañar / daño","Endommager / Dommage"],
-      ["hacer daño","Faire mal"],
-      ["hacerse daño","Se faire mal"],
-    ],
-    ln: [
-      ["koloba / loba","Parler / Dire"],
-      ["liloba / maloba","Mot / Parole"],
-      ["kobenda","Tirer / Attirer / Étirer"],
-      ["kobenda miso","Attirer l'attention (litt. tirer les yeux)"],
-      ["kobenda nzoto","S'étirer"],
-      ["kondima / dima","Accepter / Admettre / Être d'accord"],
-      ["nandimi te","Je ne suis pas d'accord / Je refuse"],
-      ["kondimisa","Convaincre / Persuader"],
-      ["bondimi","Foi / Croyance"],
-      ["kolenga","Trembler / Frissonner"],
-      ["kolengela","Arranger / Prendre soin / Préparer"],
-      ["kobala","Se marier"],
-      ["libala","Mariage"],
-      ["balabala","Rue / Route"],
-      ["kosepela / sepela","Se réjouir / Apprécier"],
-      ["nasepeli koyeba yo","Ravi(e) de te connaître"],
-      ["kolemba","Être fatigué / En avoir marre"],
-      ["tolemba te","On n'abandonne pas ! (culte)"],
-      ["kolembisa","Épuiser / Amollir"],
-      ["kokóma","Arriver / Devenir (ton haut)"],
-      ["kokòma","Écrire (ton bas — homophone !)"],
-      ["mokomi","Écrivain / Auteur"],
-      ["kobaka / kobáka","Poser / Attacher (deux tons)"],
-      ["kobaka pardon","Demander pardon (idiomatique Kinshasa)"],
-      ["kobakisa","Ajouter / Additionner"],
-      ["kobanda / banda","Commencer / Débuter"],
-      ["ebandeli","Le début"],
-      ["bandá","Depuis (préposition)"],
-      ["kobanza","Penser / Réfléchir"],
-      ["kobína / bina","Danser"],
-      ["-zo- (progressif)","Marqueur PRÉSENT PROGRESSIF 'être en train de'"],
-      ["mabína","Danse (nom)"],
-      ["kosenga / senga","Demander / Solliciter"],
-      ["kosengela","Falloir / Devoir (obligation)"],
-      ["libándá","Dehors / Extérieur"],
-      ["libanda ya mpepo","Aéroport"],
-      ["kolimbisa","Pardonner"],
-    ],
-    en: [],
-    alertes: [
-      ["-zo- (progressif) 🇨🇩","Marqueur du présent continu : nazobina, ozobina, azobina, tozobina, bazobina"],
-      ["Verbes homophones 🇨🇩","kokoma (arriver/devenir) vs kokoma (écrire) — ton haut vs bas"],
-      ["kobaka + racines","kobaka (poser) / kobáka (attacher) / kobakisa (ajouter) / kobakola (enlever)"],
-      ["Racines verbales lingala","Beaucoup de verbes commencent par ko-l- ou ko-b- avec sens complètement différents — attention au ton !"],
-      ["Lingala urbain","kobaka pardon = expression Kinshasa mêlant lingala + français"],
-      ["Trilogie temporelle 🇨🇩","Passé (-i/-aki), Présent (-zo-), Futur (na-ko-)"],
-    ]
-  },
-  {
-    date: "4 octobre 2026",
-    label: "Famille maleta · fallar · Phrase spirituelle Nzambe · -aka habituel",
-    es: [
-      ["maletero","Coffre (voiture) / Porteur"],
-      ["maleta","Valise"],
-      ["maletín","Mallette"],
-      ["hacer la maleta","Faire sa valise"],
-      ["capaz","Capable / (argot) Peut-être"],
-      ["capacidad","Capacité"],
-      ["incapaz","Incapable"],
-      ["capacitar","Former / Habiliter"],
-      ["ser capaz de","Être capable de"],
-      ["fallido","Raté / Manqué / Échoué"],
-      ["fallar","Rater / Échouer / Faire défaut"],
-      ["fallo","Erreur / Panne / Verdict"],
-      ["fallecer","Décéder (soutenu)"],
-      ["estado fallido","État défaillant (géopolitique)"],
-      ["fallo técnico","Problème technique / Panne"],
-    ],
-    ln: [
-      ["Eloko","Chose / Objet (biloko au pluriel)"],
-      ["Liboso","Avant / D'abord / En premier"],
-      ["-aka (habituel)","⭐ Suffixe HABITUEL / ITÉRATIF"],
-      ["Nalingaka","J'aime (habituel = kolinga + -aka)"],
-      ["Nanu","Encore / D'abord"],
-      ["Ezali te / Ezape","Ce n'est pas (ezape = oral Kinshasa)"],
-      ["Nzambe","Dieu"],
-      ["Mpo / Po","Parce que / Pour"],
-      ["Yo muta","C'est toi qui (emphatique)"],
-      ["Kokelela","Créer / Création"],
-      ["Biso","Nous"],
-      ["Ezali na / Ezana","Qui sont dans / existent dans"],
-      ["Mokili","Monde / Terre"],
-    ],
-    en: [],
-    alertes: [
-      ["⭐ Suffixe -aka (habituel) 🇨🇩","Transforme un verbe en action HABITUELLE/RÉPÉTÉE. Ex: nalingi (j'aime maintenant) → nalingaka (j'aime toujours)"],
-      ["Famille habituel","nasepeli → nasepelaka · nalobi → nalobaka · abini → abinaka"],
-      ["Contraction orale Kinshasa","ezali te → ezape · idem po → mpo"],
-      ["Structure emphatique spirituelle","Yo muta + verbe = C'est toi qui… (prières, cantiques)"],
-      ["fallar vs fallecer 🇪🇸","fallar = échouer · fallecer = décéder (ne pas confondre !)"],
-      ["capaz régional 🇪🇸","En Argentine/Uruguay : capaz = peut-être (synonyme oral de tal vez)"],
-    ]
-  },
-  {
-    date: "5 octobre 2026",
-    label: "Anglais B2 → C1 · Équivalents C1 · Parler comme un natif US",
-    es: [],
-    ln: [],
-    en: [
-      ["cork","Bouchon de liège"],["to snoop","Fouiner"],["to squat","S'accroupir"],["to cauterise","Cautériser"],["pull toward","Attirer vers"],
-      ["to bottle sth up","Refouler (émotions)"],["put a lid on it","Ferme-la / Contenir"],["to pry into","S'immiscer dans"],["nosy","Fouineur"],["poke your nose into","Fourrer son nez dans"],
-      ["to crouch down","S'accroupir"],["not know the first thing about","N'y rien connaître"],["become desensitised to","Devenir insensible à"],["be drawn to","Être attiré par"],["gravitate toward","Se tourner vers"],
-    ],
-    alertes: [
-      ["Délatiniser 🇬🇧","Un francophone sonne formel avec postpone, tolerate… Un Américain dit put off, put up with."],
-      ["Flap T 🇺🇸","Entre deux voyelles, le T américain devient un D rapide : water → « wader », data → « DAY-da »."],
-      ["Réductions orales 🇺🇸","gonna, wanna, gotta, lemme, whaddaya : à comprendre et à utiliser dans un registre détendu."],
-      ["gravitate toward vs be drawn to","Deux marqueurs C1 très naturels à l'oral pour dire « être attiré par »."],
-    ]
-  },
-  {"date": "8 octobre 2026", "label": "quitar · llevar + gérondif · verbes de « devenir » · kobosana · pull strings, parole, inquiry", "es": [["quitar", "Enlever / Retirer / Ôter (≠ quitter !)"], ["quitarse", "S'enlever (vêtement) / Se retirer"], ["quitarse de en medio", "S'écarter / Dégager (litt. s'enlever du milieu)"], ["quitarse un peso de encima", "(fig.) Se libérer d'un poids"], ["quitarse el sombrero", "(fig.) Tirer son chapeau"], ["quitarse años", "(fig.) Se rajeunir / Mentir sur son âge"], ["estampado", "Imprimé / À motifs (adj.)"], ["el estampado", "L'imprimé / Le motif"], ["estampar", "Imprimer / Apposer · (fam.) Projeter contre"], ["estamparse contra", "(fam.) S'écraser contre / Se prendre de plein fouet"], ["llevar + gerundio", "Ça fait [durée] que… (action qui continue)"], ["se lleva diciendo", "On le dit depuis longtemps"], ["llevar sin + infinitivo", "Ça fait [durée] que je ne… pas"], ["aclarar", "Clarifier / Éclaircir / Rincer"], ["aclararse", "S'éclaircir (temps) / Y voir clair"], ["la aclaración", "La clarification / La précision"], ["aclarar dudas", "Lever les doutes / Répondre aux questions"], ["no me aclaro", "(fam.) Je m'y perds / Je n'y comprends rien"], ["si no", "Si … ne … pas (condition, 2 mots ≠ sino)"], ["ponerse a + infinitivo", "Se mettre à (faire qqch)"], ["echarse a", "Se mettre soudain à (rire, pleurer…)"], ["ponerse + emoción", "Devenir (changement passager : humeur, couleur)"], ["volverse", "Devenir (changement profond, caractère)"], ["quedarse + adjetivo", "Devenir / Rester (résultat d'un événement)"], ["el tonito", "Le petit ton (condescendant, ironique)"], ["ponerse el tono de alguien", "Prendre le ton de qqn / L'imiter"], ["ocasionar", "Occasionner / Causer (soutenu)"], ["junto a alguien", "À côté de / Aux côtés de qqn"], ["joya", "Bijou · (fig.) Perle, trésor"], ["¡joya!", "(argot 🇦🇷🇺🇾) Super ! Génial !"], ["vencer", "Vaincre / Battre · (fig.) Expirer, arriver à échéance"], ["el vencimiento", "L'échéance / La date d'expiration"], ["sumar", "Additionner / Ajouter"], ["súmale que…", "Ajoute à ça que… (oral)"], ["sumarse a", "Se joindre à"], ["pedir salir a alguien", "Demander à qqn de sortir avec soi"]], "ln": [["Kobosana", "Oublier (aussi : faire des erreurs)"], ["Bosana", "Oublie ! (impératif de kobosana)"], ["Nabosani", "J'ai oublié / J'oublie"], ["Kobosana te", "N'oublie pas ! / N'oubliez pas !"]], "en": [["to rip out", "Arracher (d'un coup, avec force)"], ["to tear out", "Arracher (une page…)"], ["to yank out", "Arracher d'un coup sec (fam.)"], ["to gut", "Vider entièrement · (fig.) vider de sa substance"], ["to wrest", "Arracher de force (pouvoir, contrôle) — soutenu"], ["a rip-off", "Une arnaque (fam.)"], ["belly button", "Nombril (courant)"], ["navel", "Nombril (neutre, écrit)"], ["navel-gazing", "(fig.) Nombrilisme"], ["umbilicus", "Ombilic (médical)"], ["innie / outie", "Nombril creux / qui ressort (fam.)"], ["to pull strings", "Faire jouer ses relations / Pistonner"], ["to call in a favor", "Demander un service rendu en retour"], ["friends in high places", "Avoir le bras long (des relations haut placées)"], ["parole board", "Commission des libérations conditionnelles"], ["on parole", "En liberté conditionnelle"], ["probation", "Sursis avec mise à l'épreuve (≠ parole)"], ["inquiry", "Enquête officielle / Demande de renseignements"], ["a probe", "Une enquête (langage des médias)"], ["an inquest", "Enquête judiciaire sur un décès"]], "alertes": [["Article au lieu du possessif (vêtements, corps)", "Avec les vêtements et les parties du corps, l'espagnol met l'ARTICLE, pas le possessif : le pronom réfléchi indique déjà à qui c'est. Le possessif est un calque du français."], ["quitar ≠ quitter", "quitar = enlever, retirer. Pour quitter un lieu : salir de / irse de. Pour quitter quelqu'un : dejar."], ["llevar + durée + gérondif", "llevar + durée + gérondif exprime une action commencée dans le passé qui continue encore. Plus naturel à l'oral que « desde hace ». Négatif : llevar + durée + sin + infinitif."], ["sino (1 mot) ≠ si no (2 mots)", "Ils se prononcent pareil. si no = si + ne… pas (condition). sino = mais (correction après une négation). Test : si tu peux traduire « si… ne… pas », c'est deux mots."], ["Les 4 verbes de « devenir »", "ponerse : changement passager (humeur, couleur). volverse : changement profond (caractère). hacerse : par effort ou choix (métier, religion). quedarse : résultat d'un événement."], ["Diminutif -ito : affectueux OU péjoratif", "-ito peut être tendre (un cafecito, mi abuelita) ou ironique et méprisant (ese tonito, el listillo). C'est le contexte et l'intonation qui tranchent, comme « mon petit » en français."], ["Subjonctif de pedir (e → i)", "pedir change son radical e → i à toutes les personnes du subjonctif présent (comme servir, repetir, seguir)."], ["Pronom collé à l'infinitif et à l'impératif", "Comme avec le gérondif, le pronom se colle à la fin de l'infinitif et de l'impératif affirmatif. Il faut parfois un accent écrit pour garder la syllabe tonique. À l'impératif négatif, il repasse devant."], ["parole ≠ parole", "En anglais, parole = libération conditionnelle. Le sens français (« parole ») se dit word ou speech. À distinguer aussi de probation (sursis avec mise à l'épreuve, sans prison)."]]}
-,
-  {
-    date: "16 oct. 2026",
-    label: "Session immersion & avancé",
-    es: [
-      ["aguantar","Supporter / Tenir le coup"],["a lo mejor","Peut-être (registre oral)"],
-      ["chapuzas","Bricolage / Boulot bâclé"],["dar fruto","Porter ses fruits"],
-      ["dar igual","Être égal / S'en ficher"],["desatar","Détacher / Déchaîner"],
-      ["empapado","Trempé"],["encajar","Emboîter / Encaisser"],
-      ["enterarse","Se rendre compte / Apprendre"],["estar al tanto","Être au courant"],
-      ["gastar","Dépenser / User"],["hacerse","Devenir / Se faire"],
-      ["jalar","Tirer (Lat. Am.) / Manger (argot)"],["madrugar","Se lever tôt"],
-      ["malgastar","Gaspiller"],["maña","Astuce / Habileté"],
-      ["capacitar","Former / Habiliter"],["pillar","Attraper / Choper (argot)"],
-      ["tirón","Coup sec / Vol à l'arraché"],["tutear","Tutoyer"]
-    ],
-    ln: [
-      ["Kosepela","Rire / Se réjouir"],["Na libanda","Dehors / À l'extérieur"]
-    ],
-    en: [
-      ["bestow","Accorder / Conférer"],["conceited","Vaniteux / Prétentieux"],
-      ["daunting","Intimidant / Décourageant"],["disheartening","Décourageant / Démoralisant"],
-      ["fathom","Comprendre / Saisir"],["grounded","Ancré / Équilibré"],
-      ["gut-wrenching","Déchirant / Qui prend aux tripes"],["hefty","Costaud / Lourd"],
-      ["looming","Imminent / Menaçant"],["outspoken","Franc / Qui dit ce qu'il pense"],
-      ["parole board","Commission de libération conditionnelle"],
-      ["reckoning","Jugement / Heure de vérité"],["rehab","Rééducation / Cure de désintox"],
-      ["relentless","Implacable / Acharné"],["staggering","Stupéfiant / Ahurissant"],
-      ["upheaval","Bouleversement / Chamboulement"]
-    ],
-    alertes: [
-      ["dar fruto vs dar resultado", "Dar fruto = porter ses fruits (sens figuré, effort → résultat concret sur la durée). Dar resultado = donner des résultats (plus immédiat, technique). Dar fruto implique un processus organique."],
-      ["fathom : registre soutenu", "Fathom (C1) = saisir/comprendre en profondeur. I can't fathom why… est plus littéraire que I can't understand. À l'oral américain courant, on dira plutôt figure out ou wrap my head around."],
-      ["tutear ≠ vouvoyer", "Tutear = tutoyer (traiter de tú). Le contraire est tratar de usted. En Espagne le tutoiement domine au quotidien ; en Amérique latine, usted reste plus fréquent même entre proches dans certains pays (Colombie, Costa Rica)."],
-      ["parole ≠ parole", "En anglais, parole = libération conditionnelle. Le sens français (« parole ») se dit word ou speech. À distinguer aussi de probation (sursis avec mise à l'épreuve, sans prison)."]
-    ]
-  },
-  {
-    date: "24 oct. 2026",
-    label: "Nuances du quotidien · Slang US expressif",
-    es: [
-      ["cosilla","Petite chose / Bricole (dim. affectueux de cosa)"],
-      ["ruido","Bruit"],
-      ["hacer gracia","Faire rire / Amuser"],
-      ["despierta","Éveillée / Dégourdie (fig.)"],
-      ["convivir","Cohabiter / Vivre ensemble (au quotidien)"],
-      ["desapercibido","Inaperçu / Qui passe inaperçu"],
-      ["cortesía","Politesse / Courtoisie"],
-      ["hacer una tontería","Faire une bêtise / une connerie"],
-      ["que le saquen","Qu'on le sorte / vire (subj. de sacar)"],
-      ["lupa","Loupe (litt.) / fig. passer au crible"]
-    ],
-    ln: [],
-    en: [
-      ["to slop","Renverser salement / Éclabousser (fam.)"],
-      ["jiggling","Qui gigote / tremble / secoue"]
-    ],
-    alertes: [
-      ["Diminutif -illa (cosilla)","Le suffixe -illa est un diminutif affectueux comme -ito : cosa → cosilla (petite chose, bricole). Courant à l'oral."],
-      ["hacer gracia ≠ tener gracia","hacer gracia = faire rire (me hace gracia = ça me fait rire). tener gracia = être drôle / ironique (¡tiene gracia! = c'est un comble !). Ne pas confondre."],
-      ["despierto : double sens","despierto = éveillé (litt. pas endormi) et aussi dégourdi, vif d'esprit (fig.). ser despierto = être dégourdi. estar despierto = être réveillé."],
-      ["sacar au subjonctif : saquen","sacar → saque, saques, saque, saquemos, saquéis, saquen. Le -c- devient -qu- devant -e pour garder le son [k]. Comme buscar → busquen, tocar → toquen."],
-      ["to slop vs to spill 🇬🇧","to spill = renverser (neutre). to slop = renverser de façon sale, éclabousser en faisant du dégât. Plus visuel et familier."],
-      ["jiggling vs giggling 🇬🇧","jiggling = secouer, faire trembler (physique). giggling = glousser, pouffer de rire (son). Attention à ne pas confondre : le J fait toute la différence."]
-    ]
-  }
-,
-  {
-    date: "6 nov. 2026",
-    label: "Sentiments & déplacements · Vocabulaire domestique · Zelda & expressions",
-    es: [
-      ["se parte de risa","Se tordre de rire / Mourir de rire","Mi madre se parte de risa con esa serie.","Ma mère se tord de rire devant cette série."],
-      ["meter a alguien","Mettre / Fourrer qqn quelque part (fam.)","Lo metieron en la cárcel por fraude.","Ils l'ont mis en prison pour fraude."],
-      ["haber roto","Avoir cassé / Avoir rompu","Parece que han roto después de cinco años.","Il paraît qu'ils ont rompu après cinq ans."],
-      ["echar de menos","Manquer (à qqn) — los echo de menos = ils me manquent","Los echo mucho de menos desde que me fui.","Ils me manquent beaucoup depuis que je suis parti."],
-      ["hasta tercero","Jusqu'en troisième (année)","Estudié piano hasta tercero, luego lo dejé.","J'ai étudié le piano jusqu'en troisième année, puis j'ai arrêté."],
-      ["atrasarse","Prendre du retard / Être en retard","Siempre se atrasaban con el alquiler.","Ils étaient toujours en retard pour le loyer."],
-      ["decidir","Décider","Al final decidí dejar el trabajo y mudarme.","Au final j'ai décidé de quitter le boulot et de déménager."],
-      ["lejos","Loin","Vive lejos de su familia.","Il/Elle vit loin de sa famille."],
-      ["ha habido","Il y a eu (pretérito perfecto, lié au présent)","Ha habido muchos cambios este año.","Il y a eu beaucoup de changements cette année."],
-      ["chocado","Heurté / Choqué / Accidenté","Me quedé chocado cuando me enteré.","Je suis resté choqué quand j'ai appris."],
-      ["hubo","Il y eut / Il y a eu (pretérito indefinido)","Hubo un terremoto en 1985.","Il y eut un tremblement de terre en 1985."],
-      ["descarrilamiento","Déraillement","El descarrilamiento provocó retrasos en toda la red.","Le déraillement a provoqué des retards sur tout le réseau."],
-      ["irse","S'en aller / Partir — me iba = je m'en allais","Ya me iba cuando me dijeron que se canceló.","Je partais déjà quand on m'a dit que c'était annulé."],
-      ["hacer felices","Rendre heureux (pluriel)","Lo único que quería era hacer felices a sus hijos.","La seule chose qu'il voulait c'était rendre ses enfants heureux."],
-      ["a punto de","Sur le point de","La luna estaba a punto de estrellarse.","La lune était sur le point de s'écraser."],
-      ["estrellarse","S'écraser / Se fracasser","El avión se estrelló contra la montaña.","L'avion s'est écrasé contre la montagne."],
-      ["llanto","Pleurs / Larmes (nom)","No pudo contener el llanto en el aeropuerto.","Il n'a pas pu retenir ses larmes à l'aéroport."],
-      ["aliviar","Soulager / Alléger","Solo quería aliviar su dolor.","Il/Elle voulait juste soulager sa douleur."],
-      ["indeseable","Indésirable","Lo trataron como a un indeseable.","Ils l'ont traité comme un indésirable."],
-      ["nevera","Réfrigérateur / Frigo (Espagne)","¿Puedes sacar la leche de la nevera?","Tu peux sortir le lait du frigo ?"],
-      ["rostro","Visage (littéraire, plus soutenu que cara)","Se le notaba el cansancio en el rostro.","La fatigue se lisait sur son visage."],
-      ["casado","Marié","Lleva diez años casado.","Ça fait dix ans qu'il est marié."],
-      ["huir","Fuir / S'enfuir — huyen = ils fuient","Miles de familias huyen de la violencia.","Des milliers de familles fuient la violence."],
-      ["bajarse de","Descendre de (un véhicule)","No te bajes todavía, faltan dos paradas.","Ne descends pas encore, il reste deux arrêts."]
-    ],
-    ln: [],
-    en: [
-      ["to behead","Décapiter","King Henry VIII beheaded two of his wives.","Le roi Henri VIII a décapité deux de ses femmes."],
-      ["to be cleared","Être disculpé / Être innocenté","She was cleared of all charges.","Elle a été innocentée de toutes les accusations."],
-      ["to overlook","Négliger / Passer à côté de / Donner sur","It's easy to overlook small details.","C'est facile de négliger les petits détails."],
-      ["to despise","Mépriser / Avoir du mépris pour","He secretly despised his coworkers.","Il méprisait secrètement ses collègues."],
-      ["to burn bridges","Couper les ponts (fig.)","Don't burn bridges with your manager.","Ne coupe pas les ponts avec ton manager."],
-      ["to weigh down","Peser sur / Accabler / Plomber","Don't let negativity weigh you down.","Ne laisse pas la négativité te plomber."],
-      ["to predate","Précéder / Être antérieur à","This tradition predates the Roman Empire.","Cette tradition est antérieure à l'Empire romain."],
-      ["breeding ground","Terreau / Foyer (fig., souvent négatif)","Social media is a breeding ground for misinformation.","Les réseaux sociaux sont un terreau pour la désinformation."],
-      ["to get off","Descendre (d'un transport fermé)","I got off at the next stop.","Je suis descendu au prochain arrêt."]
-    ],
-    alertes: [
-      ["ha habido vs hubo","ha habido = passé lié au présent (il y a eu récemment). hubo = passé coupé, révolu, narratif. En Latam, hubo est utilisé pour tout."],
-      ["Haber impersonnel = toujours singulier","⚠️ ha habido / hubo + pluriel : Ha habido problemas ✅ / Han habido problemas ❌. Hubieron ❌. Toujours 3e pers. singulier."],
-      ["irse vs ir","ir = aller (direction). irse = s'en aller, quitter (focus sur le départ). Me iba = je m'en allais. Iba al trabajo = j'allais au travail."],
-      ["a punto de (orthographe)","Toujours en 3 mots : a punto de. ≠ apunto (n'existe pas). A punto de + infinitif = sur le point de."],
-      ["estrellarse (étymologie)","De estrella (étoile). Se transformer en étoile au sol → s'écraser. Aussi fig. : me estrellé en el examen = je me suis planté."],
-      ["indeseable vs indeseado","indeseable = rejeté activement (jugement de valeur). indeseado = non souhaité (neutre, factuel). Un embarazo no deseado ≠ una persona indeseable."],
-      ["cara vs rostro","cara = quotidien, oral. rostro = littéraire, solennel, émotionnel. semblante = l'expression du visage (C1)."],
-      ["haber roto (participio)","roto = participe passé irrégulier de romper. Han roto = ils ont rompu (perfecto). Aussi adjectif : está roto = c'est cassé."],
-      ["breeding ground 🇬🇧","= terreau, foyer. Presque toujours négatif (corruption, maladie, extrémisme). Variante : hotbed (même sens). Ne pas confondre avec breading (panure)."],
-      ["to weigh down : double usage 🇬🇧","Sens physique (alourdir) et figuré (accabler). Le poids est constant et durable, pas un coup ponctuel. Synonymes C1 : to burden, to encumber, to bog down."],
-      ["huir : conjugaison irrégulière","Le i → y devant voyelle : huyo, huyes, huye, huyen. Pretérito : huyó, huyeron. Gérondif : huyendo."],
-      ["to overlook : triple sens 🇬🇧","1) Négliger, ne pas voir. 2) Fermer les yeux sur. 3) Donner sur (a room overlooking the park). Contexte crucial."]
-    ]
-  },
-  {
-    date: "8 nov. 2026",
-    label: "Sport · Justice · Quotidien · Commerce & aviation",
-    es: [
-      ["alcanzar en el marcador","Rattraper au score","Nos están alcanzando en el marcador.","Ils nous rattrapent au score."],
-      ["mientras ganemos","Tant qu'on gagne","Mientras ganemos, todo bien.","Tant qu'on gagne, tout va bien."],
-      ["creerse","Se croire / Se prendre pour","¿Quiénes se creen que son?","Pour qui ils se prennent ?"],
-      ["pensión alimenticia","Pension alimentaire","El juez le obligó a pagar una pensión alimenticia.","Le juge l'a obligé à payer une pension alimentaire."],
-      ["estar encima de","Être sur qqn (sport)","No lo dejan respirar, están encima de él.","Ils le laissent pas respirer, ils sont sur lui."],
-      ["apenas mirar","À peine regarder","Apenas lo va a mirar, seguro lo ignora.","Elle va à peine le regarder, elle va sûrement l'ignorer."],
-      ["apañárselas","Se débrouiller","Tuvimos que apañárnoslas sin hotel.","On a dû se débrouiller sans hôtel."],
-      ["colchón","Matelas","Me compré un colchón nuevo.","Je me suis acheté un nouveau matelas."],
-      ["fletar","Affréter","Fletaron aviones cargueros Boeing.","Ils ont affrété des avions-cargos Boeing."],
-      ["barriga","Ventre / Bide","Después de las vacaciones, tengo que bajar esta barriga.","Après les vacances, il faut que je perde ce bide."],
-      ["bodega","Soute (avion)","Están llenando las bodegas de los aviones.","Ils remplissent les soutes des avions."],
-      ["arancel","Droit de douane","Los aranceles subieron un 25%.","Les droits de douane ont augmenté de 25%."]
-    ],
-    ln: [],
-    en: [
-      ["to catch up (score)","Rattraper au score","They're catching up on the scoreboard.","Ils nous rattrapent au score."],
-      ["who do they think they are","Pour qui ils se prennent","Who do they think they are, cutting in line?","Pour qui ils se prennent, à nous doubler dans la file ?"],
-      ["alimony","Pension alimentaire (ex-conjoint)","He's been dodging his alimony payments.","Il esquive le paiement de sa pension alimentaire."],
-      ["child support","Pension alimentaire (enfants)","The court ordered him to pay child support.","Le tribunal l'a obligé à payer une pension alimentaire."],
-      ["to be all over someone","Être sur qqn / Marquer de près","Every time he gets the ball, they're all over him.","À chaque fois qu'il reçoit le ballon, ils sont sur lui."],
-      ["to brush off","Ignorer / Balayer (fig.)","She just brushed it off and moved on.","Elle a juste ignoré et est passée à autre chose."],
-      ["to rough it","Vivre à la dure","We forgot the tent so we had to rough it.","On a oublié la tente alors on a dû faire à la dure."],
-      ["mattress","Matelas","I need to replace my mattress.","Je dois changer mon matelas."],
-      ["chartered","Affrété / Agréé","She's a chartered accountant.","Elle est expert-comptable."],
-      ["cargo plane","Avion-cargo","They chartered Boeing cargo planes.","Ils ont affrété des avions-cargos Boeing."],
-      ["belly","Ventre / Bide","The startup went belly up after six months.","La startup a fait faillite au bout de six mois."],
-      ["belly hold","Soute ventrale","They're filling the belly holds of transport planes.","Ils remplissent les soutes des avions de transport."],
-      ["freight","Fret","Air freight costs have skyrocketed.","Les coûts du fret aérien ont explosé."],
-      ["tariff","Droit de douane","New tariffs kicked in last week.","Les nouveaux droits de douane sont entrés en vigueur la semaine dernière."],
-      ["payload","Charge utile","The payload capacity of a 747 is massive.","La capacité de charge utile d'un 747 est énorme."],
-      ["to go belly up","Faire faillite","Three companies went belly up this quarter.","Trois entreprises ont fait faillite ce trimestre."]
-    ],
-    alertes: [
-      ["alcanzar : double sens","alcanzar = atteindre (physique/objectif) ET rattraper (quelqu'un/un score). Nos alcanzan = ils nous rattrapent."],
-      ["creerse vs creer","creer = croire (qqch). creerse = se croire / se prendre pour. ¿Quién se cree que es? ≠ ¿Quién cree que es?"],
-      ["apenas : position","Devant le verbe : apenas habla = il parle à peine. Aussi temporel : apenas llegué = dès que je suis arrivé (Latam)."],
-      ["fletar / flete / fletado","fletar = affréter. flete = fret / prix du transport. fletado = affrété. Vuelo fletado = vol charter."],
-      ["bodega : selon le contexte","🇪🇸 bodega = cave à vin / cellier. ✈️ bodega = soute d'avion. 🇲🇽 bodega = entrepôt / épicerie. Toujours féminin."],
-      ["chartered : double sens 🇬🇧","1) Professionnel agréé (chartered accountant). 2) Affrété (chartered flight). Deux sens très différents, même adjectif."],
-      ["to go belly up 🇬🇧","Métaphore du poisson mort qui flotte ventre en l'air. Toujours négatif : faillite, échec. Ne pas confondre avec belly flop (plat dans l'eau)."],
-      ["alimony vs child support 🇬🇧","alimony = pension à l'ex-conjoint (🇺🇸). child support = pension pour les enfants. En français, 'pension alimentaire' couvre les deux."]
-    ]
-  }
-];
+const JOURNAL_SESSIONS = [];
 
 function openJournal(lang) {
   const titles = { es:'🇪🇸 Journal — Espagnol', ln:'🇨🇩 Journal — Lingala', en:'🇬🇧 Journal — Anglais' };
@@ -6830,7 +5846,7 @@ function bilanData() {
   const w = sum(wk), p = sum(pv);
   const days = []; // du plus ancien au plus récent
   for(let i = 6; i >= 0; i--) { const a = end - (i + 1) * day; days.push({ t: a, n: wk.filter(r => r[1] >= a && r[1] < a + day).length }); }
-  const langs = ['es', 'en', 'ln'].map(l => Object.assign({ l }, sum(wk.filter(r => r[0].startsWith(l + ':')))));
+  const langs = APP_LANGS.map(l => Object.assign({ l }, sum(wk.filter(r => r[0].startsWith(l + ':')))));
   const miss = {};
   for(const r of wk) if(r[2] === 0) miss[r[0]] = (miss[r[0]] || 0) + 1;
   const worst = Object.entries(miss).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, n]) => {
@@ -7452,7 +6468,7 @@ function updateSRSDueBadges() {
     if(!counts.hasOwnProperty(c.lang)) return;
     if(c.due <= now && c.reps > 0) counts[c.lang]++;
   });
-  ['es','ln','en'].forEach(lang => {
+  APP_LANGS.forEach(lang => {
     const badge = document.getElementById('srs-due-' + lang);
     if(!badge) return;
     const n = counts[lang];
@@ -7572,7 +6588,7 @@ function srsAutoEnqueueNew() {
   const data = srsLoad(); let added = 0; let patched = 0;
   // un mot du journal ou d'un cours déjà présent à la casse près (Kasi / kasi) ne crée pas de deuxième carte
   const lower = new Set(Object.keys(data).map(k => k.toLowerCase()));
-  ['es', 'ln', 'en'].forEach(lang => {
+  APP_LANGS.forEach(lang => {
     const f = lang;
     // 1) Words from VOCAB decks (DATA / LINGALA / ENGLISH)
     getDeckForLang(lang).forEach(card => {
@@ -8401,7 +7417,7 @@ const CRS_NODE_NAME = ['Leçon 1 · Découverte', 'Leçon 2 · Découverte', 'Le
 const CRS_META = {
   es: { flag: '🇪🇸', name: 'Espagnol', target: 'B2', tts: 'es-ES' },
   ln: { flag: '🇨🇩', name: 'Lingala', target: 'B2', tts: null },
-  en: { flag: '🇺🇸', name: 'Anglais', target: 'C1 / natif', tts: 'en-US' },
+  en: { flag: '🇺🇸', name: 'Anglais', target: 'B2 pro', tts: 'en-US' },
 };
 const CRS_ZIG = [0, 46, 72, 46, 0, -46, -72, -46];
 const CRS_PRAISE = ['Excellent !', 'Parfait !', 'Bien joué !', 'Super !', 'Impeccable !', '¡Eso es!'];
@@ -9238,7 +8254,7 @@ const RPG_DAILIES = [
   { id: 'lesson_ln', e: '🇨🇩', n: '1 leçon lingala', max: 1, lang: 'ln', cat: 'lesson' },
   { id: 'lesson_en', e: '🇬🇧', n: '1 leçon anglais', max: 1, lang: 'en', cat: 'lesson' },
   { id: 'trilingue', e: '🌍', n: 'Étudier les 3 langues', max: 3, cat: 'tri' },
-];
+].filter(d => d.lang ? APP_LANGS.includes(d.lang) : APP_LANGS.length > 1);
 const RPG_SHOP = [
   { id: 'potion', e: '🧪', n: 'Potion de soin', d: '+15 PV (Soigneur : +25)', cost: 25 },
   { id: 'freeze', e: '🧊', n: 'Gel de série', d: 'Protège ta série un jour sans activité (2 max)', cost: 50 },
@@ -9345,7 +8361,7 @@ function rpgDailyState() {
   const rev_en = todayRevs.filter(r => r[0].startsWith('en:')).length;
   const dl = rpg.dayLessonsLang || { es: 0, ln: 0, en: 0 };
   // Trilingue: count how many languages have activity today (rev or lesson)
-  const triActive = ['es', 'ln', 'en'].filter(l =>
+  const triActive = APP_LANGS.filter(l =>
     todayRevs.some(r => r[0].startsWith(l + ':')) || dl[l] > 0
   ).length;
   return {
@@ -9512,7 +8528,7 @@ function streakDangerHTML() {
   const dl = rpg.dayLessonsLang || { es: 0, ln: 0, en: 0 };
   const langFlags = { es: '🇪🇸', ln: '🇨🇩', en: '🇬🇧' };
   const langNames = { es: 'ES', ln: 'LN', en: 'EN' };
-  const langStatus = ['es', 'ln', 'en'].map(l => {
+  const langStatus = APP_LANGS.map(l => {
     const active = todayRevs.some(r => r[0].startsWith(l + ':')) || (dl[l] || 0) > 0;
     return `<span class="sd-lang${active ? ' done' : ''}">${langFlags[l]} ${langNames[l]}</span>`;
   }).join('');
@@ -9536,7 +8552,7 @@ function rpgDailiesHTML() {
   let html = '';
   // Group: SRS reviews by language
   html += '<div class="dl-group"><span class="dl-group-label">🧠 Révisions SRS</span>';
-  ['es', 'ln', 'en'].forEach(l => {
+  APP_LANGS.forEach(l => {
     const d = RPG_DAILIES.find(x => x.id === 'rev_' + l);
     const v = Math.min(d.max, Math.floor(ds[d.id])), ok = rpg.claimed.includes(d.id);
     html += `<div class="dl${ok ? ' ok' : ''}"><span class="ck">${ok ? '✓' : d.e}</span><span class="dlt">${d.n}</span><span class="dlp">${v} / ${d.max}</span></div>`;
@@ -9544,7 +8560,7 @@ function rpgDailiesHTML() {
   html += '</div>';
   // Group: Lessons by language
   html += '<div class="dl-group"><span class="dl-group-label">🗺️ Leçons</span>';
-  ['es', 'ln', 'en'].forEach(l => {
+  APP_LANGS.forEach(l => {
     const d = RPG_DAILIES.find(x => x.id === 'lesson_' + l);
     const v = Math.min(d.max, Math.floor(ds[d.id])), ok = rpg.claimed.includes(d.id);
     html += `<div class="dl${ok ? ' ok' : ''}"><span class="ck">${ok ? '✓' : d.e}</span><span class="dlt">${d.n}</span><span class="dlp">${v} / ${d.max}</span></div>`;
@@ -9552,6 +8568,7 @@ function rpgDailiesHTML() {
   html += '</div>';
   // Trilingue bonus
   const tri = RPG_DAILIES.find(x => x.id === 'trilingue');
+  if(!tri) return html;
   const triV = Math.min(tri.max, ds.trilingue), triOk = rpg.claimed.includes('trilingue');
   html += `<div class="dl tri-daily${triOk ? ' ok' : ''}"><span class="ck">${triOk ? '✓' : tri.e}</span><span class="dlt">${tri.n}</span><span class="dlp">${triV} / ${tri.max}</span></div>`;
   return html;
@@ -9566,7 +8583,7 @@ function renderHub() {
   // Streak danger warning
   const dangerSlot = document.getElementById('hub-streak-danger');
   if(dangerSlot) dangerSlot.innerHTML = streakDangerHTML();
-  ['es', 'ln', 'en'].forEach(l => {
+  APP_LANGS.forEach(l => {
     const st = crsStats(l), cur = crsCurrent(l), C = COURSES[l];
     const unit = C.units[Math.min(cur.u, C.units.length - 1)];
     const sec = C.sections[unit.s];
@@ -9582,7 +8599,7 @@ function renderHub() {
     rpg.isNew = false; rpgSave();
     setTimeout(() => crsModal(`<div style="text-align:center"><div style="font-size:3.5rem">🧑🏾⚔️</div><div class="cm-t">Ton héros est né !</div>
       <div class="cm-s">Tes ${rpg.seen.es + rpg.seen.ln + rpg.seen.en} XP déjà gagnés te placent directement au <b>niveau ${rpg.lvl}</b>, avec ${Math.floor(rpg.gold)} pièces d'or.<br><br>
-      🗺️ Chaque langue a maintenant un <b>parcours</b> par unités jusqu'à ton objectif.<br>📋 7 <b>quotidiennes</b> par langue te rapportent de l'or ; les oublier coûte des PV.<br>🌍 Le bonus <b>trilingue</b> récompense l'étude des 3 langues chaque jour.<br>👹 Chaque bonne réponse (leçons et SRS) frappe le <b>boss de quête</b>.<br>🏪 Dépense ton or en potions, gels de série ou <b>tes propres récompenses</b>.</div>
+      ${APP_LANGS.length > 1 ? `🗺️ Chaque langue a maintenant un <b>parcours</b> par unités jusqu'à ton objectif.<br>📋 7 <b>quotidiennes</b> par langue te rapportent de l'or ; les oublier coûte des PV.<br>🌍 Le bonus <b>trilingue</b> récompense l'étude des 3 langues chaque jour.<br>` : `🗺️ Ton <b>parcours</b> avance par unités jusqu'à ton objectif.<br>📋 Tes <b>quotidiennes</b> te rapportent de l'or ; les oublier coûte des PV.<br>`}👹 Chaque bonne réponse (leçons et SRS) frappe le <b>boss de quête</b>.<br>🏪 Dépense ton or en potions, gels de série ou <b>tes propres récompenses</b>.</div>
       <button class="gbtn" onclick="crsCloseModal();${rpg.lvl >= 10 ? 'openHero()' : ''}">${rpg.lvl >= 10 ? 'Choisir ma classe' : 'C\'est parti'}</button></div>`), 400);
   }
 }
@@ -9600,7 +8617,7 @@ function renderHero() {
   let cls = '';
   if(rpg.lvl >= 10 && !rpg.cls) cls = `<div class="hero-card"><div class="hub-h">🎓 Choisis ta classe</div><div class="cls-grid">${Object.entries(RPG_CLASSES).map(([k, c]) => `<button class="cls" onclick="rpgPickClass('${k}')"><b>${c.e}</b>${c.n}<div style="font-weight:700;color:var(--muted);margin-top:.2rem">${c.d}</div></button>`).join('')}</div></div>`;
   else if(rpg.lvl < 10) cls = `<div class="hero-card"><div class="hub-h">🎓 Classe</div><div class="cm-s" style="margin:0">Débloquée au niveau 10 (encore ${10 - rpg.lvl} niveau${10 - rpg.lvl > 1 ? 'x' : ''}).</div></div>`;
-  const prog = ['es', 'ln', 'en'].map(l => { const s = crsStats(l); return `<div class="dl"><span class="ck">${CRS_META[l].flag}</span><span>${CRS_META[l].name} → ${CRS_META[l].target}</span><span class="dlp">${s.units} / ${s.totalUnits} unités</span></div><div class="rbar xp" style="margin-bottom:.3rem"><i style="width:${100 * s.nodes / s.total}%"></i></div>`; }).join('');
+  const prog = APP_LANGS.map(l => { const s = crsStats(l); return `<div class="dl"><span class="ck">${CRS_META[l].flag}</span><span>${CRS_META[l].name} → ${CRS_META[l].target}</span><span class="dlp">${s.units} / ${s.totalUnits} unités</span></div><div class="rbar xp" style="margin-bottom:.3rem"><i style="width:${100 * s.nodes / s.total}%"></i></div>`; }).join('');
   document.getElementById('hero-body').innerHTML = `<div class="pg-title">⚔️ Ton héros</div>
     <div class="hero-card"><div class="hero-top"><div class="hero-ava">${rpgAvatar()}</div><div style="flex:1;min-width:0"><div class="hero-nm">Niveau ${rpg.lvl}</div><div class="hero-cl">${rpg.cls ? RPG_CLASSES[rpg.cls].n + ' · ' + RPG_CLASSES[rpg.cls].d : 'Aventurier'}</div></div></div>
       ${rpgBars()}
@@ -9750,15 +8767,15 @@ function dgCheckComplete(dg) {
   const k = dgToday();
   // Check per-language goals: all 3 languages must reach target
   const ls = (dg.langSessions && dg.langSessions[k]) || {};
-  const allDone = ['es', 'ln', 'en'].every(l => Math.floor((ls[l] || 0) / 60) >= dg.target);
+  const allDone = APP_LANGS.every(l => Math.floor((ls[l] || 0) / 60) >= dg.target);
   if(allDone && !dg['done_' + k]) {
     dg['done_' + k] = true; dgSave(dg);
-    showToast('🎯 Objectif quotidien atteint pour les 3 langues !', 'correct-toast');
+    showToast(APP_LANGS.length > 1 ? '🎯 Objectif quotidien atteint pour les 3 langues !' : '🎯 Objectif quotidien atteint !', 'correct-toast');
     try { confetti('normal'); } catch(e) {}
     if(rpg) { rpgAddGold(15); rpgGainRaw(20); rpgLog('🎯 Objectif trilingue quotidien atteint'); rpgSave(); }
   } else {
     // Check individual language completion
-    ['es', 'ln', 'en'].forEach(l => {
+    APP_LANGS.forEach(l => {
       const lMin = Math.floor((ls[l] || 0) / 60);
       if(lMin >= dg.target && !dg['done_' + k + '_' + l]) {
         dg['done_' + k + '_' + l] = true; dgSave(dg);
@@ -9778,15 +8795,15 @@ function dgRenderWidget() {
   const dg = dgGet(), k = dgToday();
   const ls = (dg.langSessions && dg.langSessions[k]) || {};
   const totalDone = Math.floor((dg.sessions[k] || 0) / 60);
-  const langBars = ['es', 'ln', 'en'].map(l => {
+  const langBars = APP_LANGS.map(l => {
     const lMin = Math.floor((ls[l] || 0) / 60);
     const pct = Math.min(100, Math.round(100 * lMin / dg.target));
     const ok = lMin >= dg.target;
     return `<div class="dg-lang-row"><span class="dg-flag">${DG_LANG_LABELS[l]}</span><div class="dg-bar"><i style="width:${pct}%;${ok ? 'background:var(--success)' : ''}"></i></div><span class="dg-lang-val" style="${ok ? 'color:var(--success)' : ''}">${lMin}/${dg.target}</span></div>`;
   }).join('');
-  const allDone = ['es', 'ln', 'en'].every(l => Math.floor((ls[l] || 0) / 60) >= dg.target);
+  const allDone = APP_LANGS.every(l => Math.floor((ls[l] || 0) / 60) >= dg.target);
   el.innerHTML = `<div class="dg-wrap">
-    <div class="dg-row"><span>🎯 Objectif quotidien par langue</span><span style="color:${allDone ? 'var(--success)' : 'var(--accent2)'};font-weight:700">${totalDone} min total ${allDone ? '✅' : ''}</span></div>
+    <div class="dg-row"><span>🎯 Objectif quotidien${APP_LANGS.length > 1 ? ' par langue' : ''}</span><span style="color:${allDone ? 'var(--success)' : 'var(--accent2)'};font-weight:700">${totalDone} min total ${allDone ? '✅' : ''}</span></div>
     ${langBars}
     <div class="dg-pick">${DG_OPTIONS.map(m => `<button class="${dg.target === m ? 'on' : ''}" onclick="dgSetTarget(${m})">${m} min</button>`).join('')}</div>
   </div>`;
@@ -9910,18 +8927,18 @@ function showXPFloat(n) {
 // FEATURE 9: BADGES & MILESTONES
 // ═══════════════════════════════════════════════
 const BADGES_DEF = [
-  { id: 'first_lesson', e: '🌱', n: 'Premier pas', d: 'Terminer ta première leçon', check: () => { for(const l of ['es','ln','en']) { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>0) return true; } return false; } },
-  { id: 'first_boss', e: '⚔️', n: 'Tueur de boss', d: 'Vaincre ton premier boss', check: () => { for(const l of ['es','ln','en']) { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>=5) return true; } return false; } },
+  { id: 'first_lesson', e: '🌱', n: 'Premier pas', d: 'Terminer ta première leçon', check: () => { for(const l of APP_LANGS) { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>0) return true; } return false; } },
+  { id: 'first_boss', e: '⚔️', n: 'Tueur de boss', d: 'Vaincre ton premier boss', check: () => { for(const l of APP_LANGS) { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>=5) return true; } return false; } },
   { id: 'streak7', e: '🔥', n: 'Flamme', d: '7 jours de série', check: () => rpg && rpg.streak >= 7 },
   { id: 'streak30', e: '🌋', n: 'Volcan', d: '30 jours de série', check: () => rpg && rpg.streak >= 30 },
-  { id: 'words50', e: '📚', n: 'Lecteur', d: 'Apprendre 50 mots (SRS)', check: () => Object.keys(srsLoad()).length >= 50 },
-  { id: 'words100', e: '🎓', n: 'Érudit', d: 'Apprendre 100 mots (SRS)', check: () => Object.keys(srsLoad()).length >= 100 },
-  { id: 'words200', e: '🧠', n: 'Génie', d: 'Apprendre 200 mots (SRS)', check: () => Object.keys(srsLoad()).length >= 200 },
+  { id: 'words50', e: '📚', n: 'Lecteur', d: 'Apprendre 50 mots (SRS)', check: () => Object.values(srsLoad()).filter(c => c.reps > 0).length >= 50 },
+  { id: 'words100', e: '🎓', n: 'Érudit', d: 'Apprendre 100 mots (SRS)', check: () => Object.values(srsLoad()).filter(c => c.reps > 0).length >= 100 },
+  { id: 'words200', e: '🧠', n: 'Génie', d: 'Apprendre 200 mots (SRS)', check: () => Object.values(srsLoad()).filter(c => c.reps > 0).length >= 200 },
   { id: 'lvl5', e: '⭐', n: 'Apprenti', d: 'Atteindre le niveau 5', check: () => rpg && rpg.lvl >= 5 },
   { id: 'lvl10', e: '💎', n: 'Vétéran', d: 'Atteindre le niveau 10', check: () => rpg && rpg.lvl >= 10 },
   { id: 'lvl20', e: '👑', n: 'Légende', d: 'Atteindre le niveau 20', check: () => rpg && rpg.lvl >= 20 },
   { id: 'perfect', e: '🌟', n: 'Perfectionniste', d: 'Obtenir 100 % sur une leçon', check: () => crsJ('badge_perfect', false) },
-  { id: 'trilingual', e: '🌍', n: 'Trilingue', d: 'Étudier les 3 langues', check: () => ['es','ln','en'].every(l => { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>0) return true; return false; }) },
+  { id: 'trilingual', e: '🌍', n: 'Trilingue', d: 'Étudier les 3 langues', check: () => APP_LANGS.every(l => { for(let u=0;u<COURSES[l].units.length;u++) if(crsDone(l,u)>0) return true; return false; }) },
   { id: 'gold500', e: '🪙', n: 'Riche', d: 'Accumuler 500 or', check: () => rpg && rpg.gold >= 500 },
   { id: 'boss3', e: '🐉', n: 'Chasseur', d: 'Vaincre 3 boss de quête', check: () => rpg && rpg.bossN >= 3 },
   { id: 'srs100', e: '🔁', n: 'Régulier', d: 'Faire 100 révisions SRS', check: () => srsRevlogLoad().length >= 100 },
@@ -9936,7 +8953,7 @@ const BADGES_DEF = [
   { id: 'srs_es100', e: '🇪🇸', n: 'Hispanista', d: '100 révisions en espagnol', check: () => srsRevlogLoad().filter(r => r[0].startsWith('es:')).length >= 100 },
   { id: 'srs_ln100', e: '🇨🇩', n: 'Lingaliste', d: '100 révisions en lingala', check: () => srsRevlogLoad().filter(r => r[0].startsWith('ln:')).length >= 100 },
   { id: 'srs_en100', e: '🇬🇧', n: 'Angliciste', d: '100 révisions en anglais', check: () => srsRevlogLoad().filter(r => r[0].startsWith('en:')).length >= 100 },
-];
+].filter(b => APP_LANGS.length > 1 ? true : !/^tri/.test(b.id)).filter(b => { const m = /^srs_(es|ln|en)100$/.exec(b.id); return !m || APP_LANGS.includes(m[1]); });
 function badgeCheck() {
   const earned = crsJ('badges_earned', []);
   let newBadges = [];
@@ -10106,6 +9123,7 @@ const STORIES = {
     },
   ],
   en: [
+    {"id":"kickoff","title":"🚀 The Kickoff Call","desc":"Premier appel avec la trésorière d'un client américain. Tes répliques décident de la suite.","level":"B2","chars":{"Y":["🧑🏾","You"],"R":["👩","Rachel"]},"steps":[{"type":"line","who":"R","text":"Hi, this is Rachel, Treasury Director. Can you hear me okay?","tr":"Bonjour, ici Rachel, directrice de la trésorerie. Vous m'entendez bien ?"},{"type":"choice","who":"Y","prompt":"Tu l'entends bien. Tu ouvres l'appel :","opts":[{"text":"Hi Rachel, loud and clear. Thanks for joining. Let me walk you through the next steps.","tr":"Bonjour Rachel, parfaitement. Merci d'être là. Je vous explique les prochaines étapes.","best":true,"note":"loud and clear + thanks for joinING + walk you through : ouverture nette, comme un Américain.","then":[{"type":"line","who":"R","text":"Perfect, go ahead.","tr":"Parfait, allez-y."}]},{"text":"Yes, I hear you well. Thank you for join. I will explain you the next steps.","tr":"(calques) Oui, je vous entends bien. Merci de rejoindre. Je vais vous expliquer les prochaines étapes.","ok":false,"note":"Deux fossiles : thank you for + -ING (joining), et explain exige « to » (explain the steps TO you).","then":[{"type":"line","who":"R","text":"Sure. Thanks for having me. Go ahead.","tr":"Bien sûr. Merci de m'accueillir. Allez-y."}]},{"text":"Yes, I can hear you. Thank you for joining. I'll explain the next steps.","tr":"Oui, je vous entends. Merci d'être là. Je vais expliquer les prochaines étapes.","note":"Correct. « Loud and clear » et « walk you through » sonneraient plus naturels.","then":[{"type":"line","who":"R","text":"Great, go ahead.","tr":"Très bien, allez-y."}]}]},{"type":"line","who":"R","text":"So, how long does the onboarding take?","tr":"Alors, combien de temps dure le démarrage ?"},{"type":"choice","who":"Y","prompt":"Compte quatre à six semaines, selon leur informatique :","opts":[{"text":"It take four to six weeks. It depend of your IT team.","tr":"(fossiles) Ça prend quatre à six semaines. Ça dépend de votre équipe informatique.","ok":false,"note":"it → takeS, dependS. Et depend ON, jamais « of ».","then":[{"type":"line","who":"R","text":"Got it. So it depends on our IT team. I'll loop them in.","tr":"Compris. Donc ça dépend de notre équipe informatique. Je les mets dans la boucle."}]},{"text":"It usually takes four to six weeks. It depends on how fast your IT team sets up the data feed.","tr":"Ça prend généralement quatre à six semaines. Ça dépend de la vitesse à laquelle votre équipe informatique met en place le flux de données.","best":true,"note":"takes, depends on, sets up : trois -s au bon endroit.","then":[{"type":"line","who":"R","text":"That works. I'll loop our IT team in today.","tr":"Ça nous va. Je mets notre équipe informatique dans la boucle aujourd'hui."}]},{"text":"Roughly four to six weeks, depending on your IT team.","tr":"Environ quatre à six semaines, selon votre équipe informatique.","note":"Très bien : court et naturel. « Roughly » avant un chiffre, parfait.","then":[{"type":"line","who":"R","text":"Okay, I'll loop them in today.","tr":"D'accord, je les mets dans la boucle aujourd'hui."}]}]},{"type":"q","prompt":"« I'll loop them in » signifie :","opts":["Je vais les relancer","Je vais les mettre dans la boucle","Je vais les remplacer"],"ans":1},{"type":"line","who":"R","text":"One more thing. Our customers must not know about the program. Is that an issue?","tr":"Encore une chose. Nos clients ne doivent pas être au courant du programme. Est-ce un problème ?"},{"type":"choice","who":"Y","prompt":"C'est justement de l'affacturage confidentiel :","opts":[{"text":"Not at all. It's confidential factoring: your debtors are not notified, and collection stays on your end.","tr":"Pas du tout. C'est de l'affacturage confidentiel : vos débiteurs ne sont pas notifiés et le recouvrement reste de votre côté.","best":true,"note":"debtors (B muet), collection, on your end : le vocabulaire exact.","then":[{"type":"line","who":"R","text":"That's exactly what we need.","tr":"C'est exactement ce qu'il nous faut."}]},{"text":"No problem. It is a confidential affacturage: your clients which pay don't know, and the recovery stay at you.","tr":"(calques) Pas de problème. C'est un affacturage confidentiel : vos clients qui paient ne savent pas, et le recouvrement reste chez vous.","ok":false,"note":"factoring ; personnes → WHO ; recouvrement courant = collection ; staYS ; « chez vous » = on your end.","then":[{"type":"line","who":"R","text":"Sorry, you mean collection stays with us? Good, that's what we need.","tr":"Pardon, vous voulez dire que le recouvrement reste chez nous ? Bien, c'est ce qu'il nous faut."}]},{"text":"That's fine. The program is confidential, so your customers won't be informed.","tr":"Aucun souci. Le programme est confidentiel, donc vos clients ne seront pas informés.","note":"Correct et clair. Ajouter « collection stays on your end » aurait répondu à sa prochaine question.","then":[{"type":"line","who":"R","text":"Good. And who handles collection?","tr":"Bien. Et qui s'occupe du recouvrement ?"},{"type":"line","who":"Y","text":"You do. Collection stays on your end.","tr":"Vous. Le recouvrement reste de votre côté."}]}]},{"type":"line","who":"R","text":"Last question: when can you send the requirements for the data file?","tr":"Dernière question : quand pouvez-vous envoyer les prérequis pour le fichier de données ?"},{"type":"choice","who":"Y","prompt":"Tu n'as pas la réponse tout de suite :","opts":[{"text":"I come back to you after to check with IT.","tr":"(calques) Je reviens vers vous après vérifier avec l'informatique.","ok":false,"note":"« Revenir vers vous » = get back TO you. Et after + -ING : after checking.","then":[{"type":"line","who":"R","text":"Sure, get back to me whenever you can.","tr":"Bien sûr, revenez vers moi quand vous pouvez."}]},{"text":"Let me check with IT and get back to you by Thursday. I'll keep you posted.","tr":"Je vérifie avec l'informatique et je reviens vers vous d'ici jeudi. Je vous tiens au courant.","best":true,"note":"get back to you + by Thursday (échéance) + keep you posted : la réponse pro quand on ne sait pas encore.","then":[{"type":"line","who":"R","text":"Thursday works. Thanks, this was really helpful.","tr":"Jeudi, c'est parfait. Merci, c'était vraiment utile."}]},{"text":"I will send them as soon as possible.","tr":"Je les enverrai dès que possible.","note":"Correct, mais vague. Un Américain attend une date : « by Thursday ».","then":[{"type":"line","who":"R","text":"Okay. Could you give me a date?","tr":"D'accord. Pourriez-vous me donner une date ?"},{"type":"line","who":"Y","text":"By Thursday at the latest.","tr":"Jeudi au plus tard."}]}]},{"type":"q","prompt":"« By Thursday » veut dire :","opts":["Jusqu'à jeudi (durée)","Jeudi au plus tard (échéance)","À partir de jeudi"],"ans":1}]},
     { id: 'outage', title: '🔀 The Outage', desc: 'Internet coupe juste avant une deadline. À toi de choisir tes répliques : l\'histoire suit tes choix.', level: 'C1',
       chars: { Y: ['🧑', 'You'], M: ['👩', 'Maya'] },
       steps: [
@@ -10153,34 +9171,6 @@ const STORIES = {
         { type: 'line', who: 'Y', text: 'Hmm, I\'ll pass on that. Just the latte, thanks.', tr: 'Hmm, je vais m\'en passer. Juste le latte, merci.' },
         { type: 'q', prompt: 'What does "I\'ll pass on that" mean?', opts: ['Je vais prendre ça', 'Je vais m\'en passer', 'Passez-moi ça'], ans: 1 },
         { type: 'line', who: 'B', text: 'You got it! That\'ll be five seventy-five.', tr: 'C\'est parti ! Ça fera cinq soixante-quinze.' },
-      ]
-    },
-    { id: 'hearing', title: '⚖️ The hearing', desc: 'Marcus fait face à la commission de libération conditionnelle.', level: 'C1',
-      chars: { M: ['👨', 'Marcus'], J: ['👩‍⚖️', 'Judge Campbell'] },
-      steps: [
-        { type: 'line', who: 'J', text: 'Mr. Davis, you\'ve been through rehab and the reports are staggering — in a good way. How do you feel?', tr: 'M. Davis, vous êtes passé par la rééducation et les rapports sont stupéfiants — dans le bon sens. Comment vous sentez-vous ?' },
-        { type: 'line', who: 'M', text: 'Honestly, the journey has been gut-wrenching. But I\'m grounded now. I can fathom the harm I caused.', tr: 'Honnêtement, le parcours a été déchirant. Mais je suis ancré maintenant. Je peux comprendre le mal que j\'ai causé.' },
-        { type: 'q', prompt: 'What does Marcus mean by « gut-wrenching »?', opts: ['Boring', 'Emotionally painful', 'Physically exhausting'], ans: 1 },
-        { type: 'line', who: 'J', text: 'The parole board has noted your relentless effort. Still, some find your progress daunting to believe.', tr: 'La commission a noté vos efforts acharnés. Pourtant, certains trouvent votre progrès difficile à croire.' },
-        { type: 'line', who: 'M', text: 'I understand. It would be conceited to say I\'m a different person. But the people who\'ve bestowed their trust on me can vouch for it.', tr: 'Je comprends. Ce serait vaniteux de dire que je suis une personne différente. Mais ceux qui m\'ont accordé leur confiance peuvent en témoigner.' },
-        { type: 'q', prompt: 'What does « bestowed » mean here?', opts: ['Refused', 'Granted / Given', 'Demanded'], ans: 1 },
-        { type: 'line', who: 'J', text: 'Don\'t let this be disheartening — the road ahead is a hefty one. But I\'m outspoken about second chances.', tr: 'Ne vous laissez pas décourager — la route devant vous est lourde. Mais je suis franche quand il s\'agit de secondes chances.' },
-        { type: 'line', who: 'M', text: 'Thank you, Your Honor. This reckoning with myself — it\'s looming large, but I\'m ready for the upheaval.', tr: 'Merci, Votre Honneur. Ce jugement envers moi-même — il est imminent et imposant, mais je suis prêt pour le bouleversement.' },
-        { type: 'q', prompt: 'What is « looming » closest to?', opts: ['Fading away', 'Approaching in a threatening way', 'Already finished'], ans: 1 }
-      ]
-    },
-    { id: 'bridges', title: '🌉 Burning bridges', desc: 'Deux collègues discutent d\'un départ difficile au bureau.', level: 'C1',
-      chars: { A: ['👩', 'Amy'], R: ['🧑', 'Ryan'] },
-      steps: [
-        { type: 'line', who: 'A', text: 'Did you hear? Kevin quit yesterday — and he didn\'t hold back. He basically despised everyone in management.', tr: 'Tu as entendu ? Kevin a démissionné hier — et il ne s\'est pas retenu. En gros, il méprisait tout le monde à la direction.' },
-        { type: 'line', who: 'R', text: 'Yeah, he really burned bridges. No way they\'ll ever take him back.', tr: 'Ouais, il a vraiment coupé les ponts. Pas moyen qu\'ils le reprennent.' },
-        { type: 'q', prompt: 'What does "burn bridges" mean?', opts: ['Build new connections', 'Destroy relationships permanently', 'Cross a bridge'], ans: 1 },
-        { type: 'line', who: 'A', text: 'I get it though — the workload was weighing him down. He\'d overlook his own health just to meet deadlines.', tr: 'Je comprends quand même — la charge de travail le plombait. Il négligeait sa propre santé juste pour respecter les délais.' },
-        { type: 'line', who: 'R', text: 'True. But his frustration predates this job. He told me it\'s been a breeding ground for burnout since day one.', tr: 'C\'est vrai. Mais sa frustration est antérieure à ce boulot. Il m\'a dit que c\'était un terreau pour le burnout depuis le premier jour.' },
-        { type: 'q', prompt: 'What does "breeding ground" mean here?', opts: ['A farm', 'A fertile environment for something negative', 'A training center'], ans: 1 },
-        { type: 'line', who: 'A', text: 'Well, he got off easy — at least he wasn\'t beheaded by HR. They could have withheld his bonus.', tr: 'Bon, il s\'en est bien sorti — au moins il n\'a pas été décapité par les RH. Ils auraient pu retenir sa prime.' },
-        { type: 'line', who: 'R', text: 'He was cleared of any misconduct, so they had to pay up. Still, I wouldn\'t want to be in his shoes.', tr: 'Il a été disculpé de toute faute, donc ils ont dû payer. Quand même, je ne voudrais pas être à sa place.' },
-        { type: 'q', prompt: 'What does "he was cleared" mean?', opts: ['He was fired', 'He was found innocent / exonerated', 'He was promoted'], ans: 1 },
       ]
     },
   ],
@@ -10828,6 +9818,16 @@ function initApp() {
   console.log('[Aprende] App ready ✓');
 }
 
+// Langues inactives (config.js : langs) : retirer leurs cartes de l'accueil et de la barre latérale
+(function hideInactiveLangs() {
+  ['es', 'ln', 'en'].filter(l => !APP_LANGS.includes(l)).forEach(l => {
+    document.querySelectorAll('.hub-card.' + l + ', .ds-lang-btn[data-lang="' + l + '"]').forEach(el => el.remove());
+  });
+  if(APP_LANGS.length === 1) document.querySelectorAll('button[onclick="showScreen(\'lang-select\')"]').forEach(b => { if(/Changer de langue/.test(b.textContent)) b.textContent = '🏠 Accueil'; });
+  const tag = document.querySelector('.hub-tag');
+  if(tag) tag.textContent = APP_LANGS.map(l => CRS_META[l].name + ' ' + CRS_META[l].target).join(' · ');
+})();
+
 // Compute actual deck sizes dynamically for lang-select (runs immediately — no data dependency)
 (function updateLangCounts() {
   const esEl = document.getElementById('lang-count-es');
@@ -10839,7 +9839,7 @@ function initApp() {
   if(lnEl) lnEl.textContent = `${LINGALA.length} mots dans le deck`;
   if(enEl) enEl.textContent = `${ENGLISH.length} mots dans le deck`;
   const enSub = document.getElementById('en-home-sub');
-  if(enSub) enSub.textContent = `🇬🇧 ${ENGLISH.length} mots · B2 → C1 · Oral US`;
+  if(enSub) enSub.textContent = `🇬🇧 ${ENGLISH.length} mots · B2 pro · Oral US`;
 })();
 
 // Desktop mode toggle (persisted)
@@ -11367,7 +10367,7 @@ function checkReminderTime() {
     const ls = (dg.langSessions && dg.langSessions[todayKey]) || {};
     const langNames = { es: 'espagnol', ln: 'lingala', en: 'anglais' };
     const langFlags = { es: '🇪🇸', ln: '🇨🇩', en: '🇬🇧' };
-    const missing = ['es', 'ln', 'en'].filter(l => Math.floor((ls[l] || 0) / 60) < dg.target);
+    const missing = APP_LANGS.filter(l => Math.floor((ls[l] || 0) / 60) < dg.target);
     if(missing.length > 0) {
       const missingText = missing.map(l => `${langFlags[l]} ${langNames[l]}`).join(', ');
       const totalMin = Math.floor((dg.sessions[todayKey] || 0) / 60);
@@ -11386,7 +10386,7 @@ function checkReminderTime() {
     const ls = (dg.langSessions && dg.langSessions[todayKey]) || {};
     const langFlags = { es: '🇪🇸', ln: '🇨🇩', en: '🇬🇧' };
     const langNames = { es: 'espagnol', ln: 'lingala', en: 'anglais' };
-    const inactive = ['es', 'ln', 'en'].filter(l => Math.floor((ls[l] || 0) / 60) < 1);
+    const inactive = APP_LANGS.filter(l => Math.floor((ls[l] || 0) / 60) < 1);
     const streak = rpg ? rpg.streak : 0;
     if(inactive.length > 0 && streak > 0) {
       const inactiveText = inactive.map(l => `${langFlags[l]} ${langNames[l]}`).join(', ');

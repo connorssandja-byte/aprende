@@ -1,8 +1,10 @@
-# ¡Aprende!
+# ¡Aprende! — copie de Connors (anglais B2 pro)
 
-**App trilingue interactive pour apprendre l'espagnol, le lingala et l'anglais — avec RPG gamifié et révisions FSRS.**
+Copie de [Nathan93600/aprende](https://github.com/Nathan93600/aprende), réglée pour l'anglais seul :
+B2 professionnel (affacturage, onboarding client), oral américain. Détail des changements dans
+[docs/MON_PROFIL.md](docs/MON_PROFIL.md). La suite de ce fichier décrit l'appli d'origine.
 
-🌐 **[Lancer l'app](https://nathan93600.github.io/aprende/)**
+🌐 **[Lancer l'app](https://connorssandja-byte.github.io/aprende/)**
 
 ---
 

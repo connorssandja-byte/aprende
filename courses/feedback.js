@@ -7,13 +7,8 @@
 // Rempli à chaque « génère » du vendredi pour les mots de la semaine.
 // Le mot de la semaine, affiché dans le bilan. Réécrit à chaque « génère ».
 const CRS_WEEK = {
-  date: "13/11/2026",
-  notes: [
-    "Grosse semaine : 1 458 révisions, environ 80 % de bonnes réponses en espagnol comme en anglais. Garde ce rythme, mais limite les nouvelles cartes tant que « À revoir » dépasse 100.",
-    "Tes cartes les plus ratées sont des mots anglais abstraits : arguably, dwell, relentless, upheaval, gravitate toward. Écris une phrase sur ta propre vie avec chacun : un mot que tu as utilisé toi-même se retient bien mieux.",
-    "Espagnol : acordarse revient 7 fois en « Encore ». Retiens la structure : me acuerdo DE ti (pronominal + de), comme se souvenir de. Sans « me », c'est acordar = se mettre d'accord.",
-    "Plantilla et agacharse sont tombés 4 fois chacun depuis le début : plantilla = l'effectif (d'une équipe, d'une entreprise), agacharse = se baisser (¡agáchate!)."
-  ]
+  date: "",
+  notes: []
 };
 
 const CRS_FB = {
