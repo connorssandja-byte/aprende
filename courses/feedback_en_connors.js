@@ -1948,5 +1948,10 @@ Object.assign(CRS_FB.en, {
    ]
   ],
   "tip": "Prononciation : « REUF-li ». Échelle : about (neutre) → roughly (ordre de grandeur) → approximately (formel)."
+ },
+ "breach": {
+  "alt": [["violation","sens juridique / données"],["a breach of contract","manquement au contrat"],["a breach of covenant","non-respect d'une clause financière (covenant)"],["a data breach","fuite / violation de données"],["to breach","enfreindre, ne pas respecter"]],
+  "err": [["*breach to","Nom : a breach OF the contract. Verbe : breach the contract, sans préposition."],["brèche","Faux ami partiel : la brèche d'un mur existe, mais en finance breach = manquement."]],
+  "tip": "Nom + OF, verbe sans rien : a breach OF contract / they breached THE contract. Son : i long, « briitch »."
  }
 });
